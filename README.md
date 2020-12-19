@@ -1,10 +1,10 @@
-# skill_drills
+<img src="./assets/images/logo/SkillDrillsDark.svg" width="500">
 
-A new Flutter project.
+Track your training progress in skill-based drills. Users can create their own custom drills with unique "Drill Types" that allow flexible ways to track their progress. Users can immediately start with an empty session or create routines which conveniently house their drills and how many sets of each drill they would like to perform.
 
-## Getting Started
+Users can re-perform routines from their session history, manage their drills and app preferences, all from within the Skill Drills flutter app.
 
-This project is a starting point for a Flutter application.
+## Getting Started with Flutter
 
 A few resources to get you started if this is your first Flutter project:
 
