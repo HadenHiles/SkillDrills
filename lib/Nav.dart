@@ -109,7 +109,7 @@ class _NavState extends State<Nav> {
               pinned: true,
               flexibleSpace: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Color(0xFFF5F5F5),
+                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Color(0xFFF7F7F7),
                 ),
                 child: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
