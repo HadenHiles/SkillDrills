@@ -1,8 +1,8 @@
 <img src="./assets/images/logo/SkillDrillsDark.svg" width="500">
 
-Track your training progress in skill-based drills. Users can create their own custom drills with unique "Drill Types" that allow flexible ways to track their progress. Users can immediately start with an empty session or create routines which conveniently house their drills and how many sets of each drill they would like to perform.
+A Flutter app for tracking progress in skill based drills. Users can create their own custom routines and drills with unique drill types that offer flexible measures of success. 
 
-Users can re-perform routines from their session history, manage their drills and app preferences, all from within the Skill Drills flutter app.
+Simply start with an empty session, or save routines so you can perform them again later.
 
 ## Getting Started with Flutter
 
