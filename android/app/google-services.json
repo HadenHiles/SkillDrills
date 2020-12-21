@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1092639561657",
+    "project_id": "skill-drills-haden",
+    "storage_bucket": "skill-drills-haden.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092639561657:android:ec6a5d651c82d13db50868",
+        "android_client_info": {
+          "package_name": "com.hadenhiles.skill_drills"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1092639561657-b535rq4gr68pneugsncjlfrh4hc2iqp6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hadenhiles.skill_drills",
+            "certificate_hash": "9b0a6bc75787962af4a9e9af0d456c6d2c26015d"
+          }
+        },
+        {
+          "client_id": "1092639561657-3f6ufbn3arbv5l55ejln96ta0bh6gbbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2B3mJiSEfc4_kv1m-pEVk4OaVFP28hdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1092639561657-3f6ufbn3arbv5l55ejln96ta0bh6gbbq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

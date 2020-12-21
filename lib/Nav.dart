@@ -82,7 +82,7 @@ class _NavState extends State<Nav> {
     setState(() {
       _selectedIndex = index;
       _title = index == 2 ? lightLogo : _pages[index].title;
-      _showLogoToolbar = _pages[index].title is Container;
+      _showLogoToolbar = (_pages[index].title is Container) || index == 2;
     });
   }
 
@@ -102,22 +102,22 @@ class _NavState extends State<Nav> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              collapsedHeight: _title is Container ? 100 : 65,
-              expandedHeight: _title is Container ? 200.0 : 140,
+              collapsedHeight: _showLogoToolbar ? 100 : 65,
+              expandedHeight: _showLogoToolbar ? 200.0 : 140,
               backgroundColor: Colors.white24,
               floating: false,
               pinned: true,
               flexibleSpace: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: _title is Container ? Theme.of(context).primaryColor : Color(0xFFF5F5F5),
+                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Color(0xFFF5F5F5),
                 ),
                 child: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
-                  titlePadding: _title is Container ? EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20) : null,
-                  centerTitle: _title is Container ? true : false,
+                  titlePadding: _showLogoToolbar ? EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20) : null,
+                  centerTitle: _showLogoToolbar ? true : false,
                   title: _title,
                   background: Container(
-                    color: _title is Container ? Theme.of(context).primaryColor : Colors.white24,
+                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Colors.white24,
                   ),
                 ),
               ),
