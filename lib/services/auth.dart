@@ -5,23 +5,29 @@ import 'package:password_strength/password_strength.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<GoogleSignInAccount> signInWithGoogle() async {
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-    ],
-  );
+Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
   // Obtain the auth details from the request
-  return _googleSignIn.signIn();
+  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+  // Create a new credential
+  final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth.accessToken,
+    idToken: googleAuth.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  return await auth.signInWithCredential(credential);
 }
 
 Future<UserCredential> signInWithFacebook() async {
   // Trigger the sign-in flow
-  final AccessToken result = await FacebookAuth.instance.login();
+  final LoginResult result = await FacebookAuth.instance.login();
 
   // Create a credential from the access token
-  final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.token);
+  final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
 
   // Once signed in, return the UserCredential
   return await auth.signInWithCredential(facebookAuthCredential);
