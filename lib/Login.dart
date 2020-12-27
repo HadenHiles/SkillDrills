@@ -570,7 +570,7 @@ class _LoginState extends State<Login> {
 
   socialSignIn(BuildContext context, String provider, Function error) async {
     if (provider == 'google') {
-      signInWithGoogle().then((credential) {
+      signInWithGoogle().then((googleSignInAccount) {
         setState(() {
           signedIn = true;
         });
