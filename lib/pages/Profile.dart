@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:skill_drills/services/auth.dart';
 import 'package:skill_drills/widgets/UserAvatar.dart';
+
+import '../Login.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -17,48 +20,76 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            child: FractionalTranslation(
-              translation: Offset(0.0, 0.0),
-              child: Align(
-                child: SizedBox(
-                  height: 75,
-                  child: UserAvatar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                ),
-                alignment: FractionalOffset(0.0, -0.025),
-              ),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                child: Text(
-                  user.displayName != "" ? user.displayName : "You",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                margin: EdgeInsets.only(right: 15),
+                child: FractionalTranslation(
+                  translation: Offset(0.0, -0.15),
+                  child: Align(
+                    child: SizedBox(
+                      height: 65,
+                      child: UserAvatar(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    alignment: FractionalOffset(0.0, 0.0),
                   ),
                 ),
               ),
-              Text(
-                user.email,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black87,
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: Text(
+                      user.displayName != null && user.displayName.isNotEmpty ? user.displayName : "You",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    user.email,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
             ],
+          ),
+          Container(
+            child: FlatButton(
+              padding: EdgeInsets.all(25),
+              child: Text(
+                "Logout",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                signOut();
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Login();
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
