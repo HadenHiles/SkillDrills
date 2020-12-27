@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skill_drills/pages/Profile.dart';
 
 import 'NavPage.dart';
 
@@ -35,6 +36,7 @@ class _NavState extends State<Nav> {
         ),
         textAlign: TextAlign.center,
       ),
+      body: Profile(),
     ),
     NavPage(
       title: Text(
