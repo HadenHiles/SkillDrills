@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/pages/Profile.dart';
-
+import 'package:skill_drills/services/factory.dart';
 import 'NavPage.dart';
 
 // This is the stateful widget that the main application instantiates.
@@ -93,6 +93,8 @@ class _NavState extends State<Nav> {
     setState(() {
       _title = lightLogo;
     });
+
+    initFactoryDefaults();
 
     super.initState();
   }

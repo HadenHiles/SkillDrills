@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/services/auth.dart';
-
 import 'Nav.dart';
 
 class Login extends StatefulWidget {
@@ -42,32 +41,10 @@ class _LoginState extends State<Login> {
   bool hidePassword = true;
 
   @override
-  void initState() {
-    //If user is signed in
-    if (signedIn) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return Nav();
-          },
-        ),
-      );
-    }
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     //If user is signed in
     if (signedIn) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return Nav();
-          },
-        ),
-      );
+      return Nav();
     }
 
     return Scaffold(
@@ -118,7 +95,10 @@ class _LoginState extends State<Login> {
                         Buttons.Google,
                         onPressed: () {
                           socialSignIn(context, 'google', (error) {
+                            // ignore: deprecated_member_use
+                            // ignore: deprecated_member_use
                             _scaffoldKey.currentState.hideCurrentSnackBar();
+                            // ignore: deprecated_member_use
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
                                 content: Text(error),
@@ -126,6 +106,7 @@ class _LoginState extends State<Login> {
                                 action: SnackBarAction(
                                   label: "Dismiss",
                                   onPressed: () {
+                                    // ignore: deprecated_member_use
                                     _scaffoldKey.currentState.hideCurrentSnackBar();
                                   },
                                 ),
@@ -293,7 +274,10 @@ class _LoginState extends State<Login> {
                                                             _signInEmail.text,
                                                             _signInPass.text,
                                                           ), (error) async {
+                                                        // ignore: deprecated_member_use
+                                                        // ignore: deprecated_member_use
                                                         _scaffoldKey.currentState.hideCurrentSnackBar();
+                                                        // ignore: deprecated_member_use
                                                         _scaffoldKey.currentState.showSnackBar(
                                                           SnackBar(
                                                             content: Text(error),
@@ -301,6 +285,7 @@ class _LoginState extends State<Login> {
                                                             action: SnackBarAction(
                                                               label: "Dismiss",
                                                               onPressed: () {
+                                                                // ignore: deprecated_member_use
                                                                 _scaffoldKey.currentState.hideCurrentSnackBar();
                                                               },
                                                             ),
@@ -461,7 +446,9 @@ class _LoginState extends State<Login> {
                                                                 _signUpEmail.text,
                                                                 _signUpPass.text,
                                                               ), (error) async {
+                                                            // ignore: deprecated_member_use
                                                             _scaffoldKey.currentState.hideCurrentSnackBar();
+                                                            // ignore: deprecated_member_use
                                                             _scaffoldKey.currentState.showSnackBar(
                                                               SnackBar(
                                                                 content: Text(error),
@@ -469,6 +456,7 @@ class _LoginState extends State<Login> {
                                                                 action: SnackBarAction(
                                                                   label: "Dismiss",
                                                                   onPressed: () {
+                                                                    // ignore: deprecated_member_use
                                                                     _scaffoldKey.currentState.hideCurrentSnackBar();
                                                                   },
                                                                 ),

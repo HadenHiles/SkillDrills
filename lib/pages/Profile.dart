@@ -69,6 +69,7 @@ class _ProfileState extends State<Profile> {
             ],
           ),
           Container(
+            width: double.infinity,
             child: FlatButton(
               padding: EdgeInsets.all(25),
               child: Text(

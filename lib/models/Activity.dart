@@ -3,18 +3,18 @@ import 'Category.dart';
 
 class Activity {
   final String id;
-  final String name;
+  final String title;
   final List<Category> categories;
   final String createdBy;
   final DocumentReference reference;
 
   Activity.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['id'] != null),
-        assert(map['name'] != null),
+        assert(map['title'] != null),
         assert(map['categories'] != null),
         assert(map['created_by'] != null),
         id = map['id'],
-        name = map['name'],
+        title = map['title'],
         categories = map['categories'],
         createdBy = map['created_by'];
 
