@@ -3,26 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-void initFactoryDefaults() async {
-  hasActivities().then((val) {
-    if (auth.currentUser != null && (val == null || !val)) {
+void initFactoryDefaults() {
+  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
+    if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
       resetActivities();
     }
-  });
-}
-
-// ignore: missing_return
-Future<bool> hasActivities() async {
-  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).get().then((snapshot) {
-    return snapshot.exists;
   });
 }
 
 // Reset / initialize the activities for the current user
 Future<void> resetActivities() async {
   // Clear out any existing activities for the signed in user
-  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).get().then((snapshot) {
-    snapshot.reference.delete();
+  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
+    snapshot.docs.forEach((doc) {
+      doc.reference.delete();
+    });
   });
 
   // Setup the default activities in the user's activities collection
