@@ -42,10 +42,32 @@ class _LoginState extends State<Login> {
   bool hidePassword = true;
 
   @override
+  void initState() {
+    //If user is signed in
+    if (signedIn) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Nav();
+          },
+        ),
+      );
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //If user is signed in
     if (signedIn) {
-      return Nav();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Nav();
+          },
+        ),
+      );
     }
 
     return Scaffold(
@@ -515,12 +537,7 @@ class _LoginState extends State<Login> {
 
   signIn(BuildContext context, AuthAttempt authAttempt, Function error) async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-        email: authAttempt.email,
-        password: authAttempt.password,
-      )
-          .then((credential) {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: authAttempt.email, password: authAttempt.password).then((credential) {
         Navigator.of(context, rootNavigator: true).pop('dialog');
 
         setState(() {
