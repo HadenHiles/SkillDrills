@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
                       width: 460,
                       child: Center(
                         child: Text(
-                          'Without measure, there is no mastery.',
+                          'Track your progress in any skill',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,

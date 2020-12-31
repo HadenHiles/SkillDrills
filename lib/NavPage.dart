@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NavPage extends StatefulWidget {
-  NavPage({Key key, this.title, this.body}) : super(key: key);
+  NavPage({Key key, this.title, this.actions, this.body}) : super(key: key);
 
   final Widget title;
+  final List<Widget> actions;
   final Widget body;
 
   @override

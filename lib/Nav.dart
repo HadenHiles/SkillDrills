@@ -24,6 +24,7 @@ class _NavState extends State<Nav> {
 
   // State variables
   Widget _title;
+  List<Widget> _actions;
   int _selectedIndex = 2;
   bool _showLogoToolbar = true;
   static List<NavPage> _pages = [
@@ -36,6 +37,19 @@ class _NavState extends State<Nav> {
         ),
         textAlign: TextAlign.center,
       ),
+      actions: [
+        Container(
+          margin: EdgeInsets.all(10),
+          child: IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.black54,
+              size: 28,
+            ),
+            onPressed: () {},
+          ),
+        ),
+      ],
       body: Profile(),
     ),
     NavPage(
@@ -84,6 +98,7 @@ class _NavState extends State<Nav> {
     setState(() {
       _selectedIndex = index;
       _title = index == 2 ? lightLogo : _pages[index].title;
+      _actions = _pages[index].actions;
       _showLogoToolbar = (_pages[index].title is Container) || index == 2;
     });
   }
@@ -92,6 +107,7 @@ class _NavState extends State<Nav> {
   void initState() {
     setState(() {
       _title = lightLogo;
+      _actions = [];
     });
 
     initFactoryDefaults();
@@ -125,6 +141,7 @@ class _NavState extends State<Nav> {
                   ),
                 ),
               ),
+              actions: _actions,
             ),
           ];
         },
