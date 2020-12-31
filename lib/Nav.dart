@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
+import 'package:skill_drills/tabs/profile/settings.dart';
+import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'NavTab.dart';
 
 // This is the stateful widget that the main application instantiates.
@@ -29,68 +32,37 @@ class _NavState extends State<Nav> {
   bool _showLogoToolbar = true;
   static List<NavTab> _tabs = [
     NavTab(
-      title: Text(
-        "Profile",
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
+      title: BasicTitle(title: "Profile"),
       actions: [
         Container(
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.only(top: 10),
           child: IconButton(
             icon: Icon(
               Icons.settings,
               color: Colors.black54,
               size: 28,
             ),
-            onPressed: () {},
+            onPressed: () {
+              navigatorKey.currentState.push(MaterialPageRoute(builder: (BuildContext context) {
+                return ProfileSettings();
+              }));
+            },
           ),
         ),
       ],
       body: Profile(),
     ),
     NavTab(
-      title: Text(
-        "History",
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
+      title: BasicTitle(title: "History"),
     ),
     NavTab(
-      title: Text(
-        "Start",
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
+      title: BasicTitle(title: "Start"),
     ),
     NavTab(
-      title: Text(
-        "Drills",
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
+      title: BasicTitle(title: "Drills"),
     ),
     NavTab(
-      title: Text(
-        "Routines",
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
+      title: BasicTitle(title: "Routines"),
     ),
   ];
 
