@@ -2,7 +2,7 @@
     package="com.hadenhiles.skill_drills">
    <application
         android:label="skill_drills"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name="com.hadenhiles.skill_drills.MainActivity"
             android:launchMode="singleTop"
