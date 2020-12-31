@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:skill_drills/pages/Profile.dart';
+import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
-import 'NavPage.dart';
+import 'NavTab.dart';
 
 // This is the stateful widget that the main application instantiates.
 class Nav extends StatefulWidget {
@@ -27,12 +27,12 @@ class _NavState extends State<Nav> {
   List<Widget> _actions;
   int _selectedIndex = 2;
   bool _showLogoToolbar = true;
-  static List<NavPage> _pages = [
-    NavPage(
+  static List<NavTab> _tabs = [
+    NavTab(
       title: Text(
         "Profile",
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           color: Colors.black87,
         ),
         textAlign: TextAlign.center,
@@ -52,41 +52,41 @@ class _NavState extends State<Nav> {
       ],
       body: Profile(),
     ),
-    NavPage(
+    NavTab(
       title: Text(
         "History",
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           color: Colors.black87,
         ),
         textAlign: TextAlign.center,
       ),
     ),
-    NavPage(
+    NavTab(
       title: Text(
         "Start",
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           color: Colors.black87,
         ),
         textAlign: TextAlign.center,
       ),
     ),
-    NavPage(
+    NavTab(
       title: Text(
         "Drills",
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           color: Colors.black87,
         ),
         textAlign: TextAlign.center,
       ),
     ),
-    NavPage(
+    NavTab(
       title: Text(
         "Routines",
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           color: Colors.black87,
         ),
         textAlign: TextAlign.center,
@@ -97,9 +97,9 @@ class _NavState extends State<Nav> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _title = index == 2 ? lightLogo : _pages[index].title;
-      _actions = _pages[index].actions;
-      _showLogoToolbar = (_pages[index].title is Container) || index == 2;
+      _title = index == 2 ? lightLogo : _tabs[index].title;
+      _actions = _tabs[index].actions;
+      _showLogoToolbar = (_tabs[index].title is Container) || index == 2;
     });
   }
 
@@ -145,7 +145,7 @@ class _NavState extends State<Nav> {
             ),
           ];
         },
-        body: _pages.elementAt(_selectedIndex),
+        body: _tabs.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

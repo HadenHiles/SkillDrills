@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class NavPage extends StatefulWidget {
-  NavPage({Key key, this.title, this.actions, this.body}) : super(key: key);
+class NavTab extends StatefulWidget {
+  NavTab({Key key, this.title, this.actions, this.body}) : super(key: key);
 
   final Widget title;
   final List<Widget> actions;
   final Widget body;
 
   @override
-  _NavPageState createState() => _NavPageState();
+  _NavTabState createState() => _NavTabState();
 }
 
-class _NavPageState extends State<NavPage> {
+class _NavTabState extends State<NavTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
