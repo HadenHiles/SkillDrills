@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:skill_drills/main.dart';
 import 'package:skill_drills/services/auth.dart';
 import 'package:skill_drills/widgets/UserAvatar.dart';
 
@@ -82,7 +83,7 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 signOut();
 
-                Navigator.of(context).pushReplacement(
+                navigatorKey.currentState.pushReplacement(
                   MaterialPageRoute(
                     builder: (context) {
                       return Login();
