@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'Login.dart';
+
+// Setup a navigation key so that we can navigate without context
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +24,7 @@ class SkillDrills extends StatelessWidget {
 
     return MaterialApp(
       title: 'Skill Drills',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         backgroundColor: Colors.white,
         primaryColor: Color.fromRGBO(2, 164, 221, 1),
