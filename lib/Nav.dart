@@ -95,7 +95,7 @@ class _NavState extends State<Nav> {
             SliverAppBar(
               collapsedHeight: _showLogoToolbar ? 100 : 65,
               expandedHeight: _showLogoToolbar ? 200.0 : 140,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               iconTheme: Theme.of(context).iconTheme,
               actionsIconTheme: Theme.of(context).iconTheme,
               floating: false,
@@ -147,7 +147,7 @@ class _NavState extends State<Nav> {
         currentIndex: _selectedIndex,
         backgroundColor: Theme.of(context).backgroundColor,
         selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Theme.of(context).iconTheme.color,
+        unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
         onTap: _onItemTapped,
       ),
     );

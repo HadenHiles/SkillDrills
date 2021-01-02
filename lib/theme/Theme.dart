@@ -15,9 +15,10 @@ class SkillDrillsTheme {
     ),
     colorScheme: ColorScheme.light(
       primary: Colors.white,
-      onPrimary: Colors.black87,
+      onPrimary: Colors.black54,
       primaryVariant: Color(0xffF7F7F7),
       secondary: Color.fromRGBO(2, 164, 221, 1),
+      onSecondary: Colors.white,
     ),
     cardTheme: CardTheme(
       color: Colors.white,
@@ -49,22 +50,23 @@ class SkillDrillsTheme {
     primaryColor: Color.fromRGBO(2, 164, 221, 1),
     scaffoldBackgroundColor: Color(0xff1A1A1A),
     appBarTheme: AppBarTheme(
-      color: Colors.black87,
+      color: Color(0xff222222),
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
     ),
     colorScheme: ColorScheme.light(
-      primary: Colors.black87,
-      onPrimary: Colors.white,
-      primaryVariant: Colors.black,
+      primary: Color(0xff222222),
+      onPrimary: Colors.white54,
+      primaryVariant: Color(0xff1A1A1A),
       secondary: Color.fromRGBO(2, 164, 221, 1),
+      onSecondary: Colors.white,
     ),
     cardTheme: CardTheme(
       color: Colors.black,
     ),
     iconTheme: IconThemeData(
-      color: Colors.white54,
+      color: Color.fromRGBO(255, 255, 255, 0.8),
     ),
     textTheme: TextTheme(
       headline1: TextStyle(
@@ -74,13 +76,13 @@ class SkillDrillsTheme {
         color: Colors.white,
       ),
       headline3: TextStyle(
-        color: Colors.white54,
+        color: Color.fromRGBO(255, 255, 255, 0.8),
       ),
       bodyText1: TextStyle(
         color: Colors.white,
       ),
       bodyText2: TextStyle(
-        color: Colors.white54,
+        color: Color.fromRGBO(255, 255, 255, 0.8),
       ),
     ),
   );

@@ -50,7 +50,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 child: IconButton(
                   icon: Icon(
                     Icons.arrow_back,
-                    color: Theme.of(context).iconTheme.color,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     size: 28,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
@@ -86,7 +86,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   subtitle: '',
                   leading: Icon(
                     Icons.directions_walk,
-                    color: Theme.of(context).iconTheme.color,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   onPressed: (BuildContext context) {},
                 ),
@@ -95,7 +95,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   title: 'Rest Timer',
                   leading: Icon(
                     Icons.timer,
-                    color: Theme.of(context).iconTheme.color,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   switchValue: _restTimer,
                   onToggle: (bool value) {
@@ -109,7 +109,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   title: 'Dark Mode',
                   leading: Icon(
                     Icons.brightness_2,
-                    color: Theme.of(context).iconTheme.color,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   switchValue: _darkMode,
                   onToggle: (bool value) async {
