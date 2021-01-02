@@ -13,7 +13,7 @@ class BasicTitle extends StatelessWidget {
         title,
         style: TextStyle(
           fontSize: 22,
-          color: Colors.black87,
+          color: Theme.of(context).textTheme.headline1.color,
         ),
         textAlign: TextAlign.center,
       ),

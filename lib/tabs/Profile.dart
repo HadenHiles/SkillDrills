@@ -54,7 +54,7 @@ class _ProfileState extends State<Profile> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Theme.of(context).textTheme.bodyText1.color,
                       ),
                     ),
                   ),

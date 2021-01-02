@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:settings_ui/settings_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -9,23 +13,36 @@ class ProfileSettings extends StatefulWidget {
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
+  // State settings values
+  bool _restTimer = true;
+  bool _darkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadSettings();
+  }
+
+  //Loading counter value on start
+  _loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _darkMode = (prefs.getBool('dark_mode') ?? false);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: NestedScrollView(
-        body: ListView(
-          children: [
-            Container(
-              child: Text("Activities"),
-            ),
-          ],
-        ),
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
               collapsedHeight: 65,
               expandedHeight: 65,
-              backgroundColor: Colors.white24,
+              backgroundColor: Theme.of(context).backgroundColor,
               floating: false,
               pinned: true,
               leading: Container(
@@ -33,7 +50,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 child: IconButton(
                   icon: Icon(
                     Icons.arrow_back,
-                    color: Colors.black54,
+                    color: Theme.of(context).iconTheme.color,
                     size: 28,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
@@ -41,7 +58,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               ),
               flexibleSpace: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Color(0xFFF7F7F7),
+                  color: Theme.of(context).backgroundColor,
                 ),
                 child: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
@@ -49,7 +66,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   centerTitle: false,
                   title: BasicTitle(title: "Settings"),
                   background: Container(
-                    color: Colors.white24,
+                    color: Theme.of(context).backgroundColor,
                   ),
                 ),
               ),
@@ -57,6 +74,58 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
           ];
         },
+        body: SettingsList(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          sections: [
+            SettingsSection(
+              title: 'General',
+              tiles: [
+                SettingsTile(
+                  titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                  title: 'Activities',
+                  subtitle: '',
+                  leading: Icon(
+                    Icons.directions_walk,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  onPressed: (BuildContext context) {},
+                ),
+                SettingsTile.switchTile(
+                  titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                  title: 'Rest Timer',
+                  leading: Icon(
+                    Icons.timer,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  switchValue: _restTimer,
+                  onToggle: (bool value) {
+                    setState(() {
+                      _restTimer = value;
+                    });
+                  },
+                ),
+                SettingsTile.switchTile(
+                  titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                  title: 'Dark Mode',
+                  leading: Icon(
+                    Icons.brightness_2,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  switchValue: _darkMode,
+                  onToggle: (bool value) async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    setState(() {
+                      _darkMode = !_darkMode;
+                      prefs.setBool('dark_mode', _darkMode);
+                    });
+
+                    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(value);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

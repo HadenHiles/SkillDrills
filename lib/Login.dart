@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skill_drills/services/auth.dart';
+import 'package:skill_drills/theme/StateNotifier.dart';
 import 'Nav.dart';
 
 class Login extends StatefulWidget {
@@ -39,6 +42,19 @@ class _LoginState extends State<Login> {
   // State variables
   bool signedIn = FirebaseAuth.instance.currentUser != null;
   bool hidePassword = true;
+
+  @override
+  void initState() {
+    _loadPreferences();
+
+    super.initState();
+  }
+
+  // Load shared preferences
+  void _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(prefs.getBool('dark_mode'));
+  }
 
   @override
   Widget build(BuildContext context) {

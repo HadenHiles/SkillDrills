@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
-import 'package:skill_drills/tabs/profile/settings.dart';
+import 'package:skill_drills/tabs/profile/Settings.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'NavTab.dart';
 
@@ -39,7 +39,6 @@ class _NavState extends State<Nav> {
           child: IconButton(
             icon: Icon(
               Icons.settings,
-              color: Colors.black54,
               size: 28,
             ),
             onPressed: () {
@@ -96,12 +95,14 @@ class _NavState extends State<Nav> {
             SliverAppBar(
               collapsedHeight: _showLogoToolbar ? 100 : 65,
               expandedHeight: _showLogoToolbar ? 200.0 : 140,
-              backgroundColor: Colors.white24,
+              backgroundColor: Theme.of(context).backgroundColor,
+              iconTheme: Theme.of(context).iconTheme,
+              actionsIconTheme: Theme.of(context).iconTheme,
               floating: false,
               pinned: true,
               flexibleSpace: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Color(0xFFF7F7F7),
+                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).appBarTheme.backgroundColor,
                 ),
                 child: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
@@ -109,7 +110,7 @@ class _NavState extends State<Nav> {
                   centerTitle: _showLogoToolbar ? true : false,
                   title: _title,
                   background: Container(
-                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Colors.white24,
+                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).appBarTheme.backgroundColor,
                   ),
                 ),
               ),
@@ -120,6 +121,7 @@ class _NavState extends State<Nav> {
         body: _tabs.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -143,8 +145,9 @@ class _NavState extends State<Nav> {
           ),
         ],
         currentIndex: _selectedIndex,
+        backgroundColor: Theme.of(context).backgroundColor,
         selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.black54,
+        unselectedItemColor: Theme.of(context).iconTheme.color,
         onTap: _onItemTapped,
       ),
     );

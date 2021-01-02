@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:skill_drills/theme/StateNotifier.dart';
+import 'package:skill_drills/theme/Theme.dart';
 import 'Login.dart';
 
 // Setup a navigation key so that we can navigate without context
@@ -9,7 +12,13 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(SkillDrills());
+
+  runApp(
+    ChangeNotifierProvider<ThemeStateNotifier>(
+      create: (_) => ThemeStateNotifier(),
+      child: SkillDrills(),
+    ),
+  );
 }
 
 class SkillDrills extends StatelessWidget {
@@ -22,18 +31,17 @@ class SkillDrills extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    return MaterialApp(
-      title: 'Skill Drills',
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-        backgroundColor: Colors.white,
-        primaryColor: Color.fromRGBO(2, 164, 221, 1),
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Login(),
+    return Consumer<ThemeStateNotifier>(
+      builder: (context, themeState, child) {
+        return MaterialApp(
+          title: 'Skill Drills',
+          navigatorKey: navigatorKey,
+          theme: SkillDrillsTheme.lightTheme,
+          darkTheme: SkillDrillsTheme.darkTheme,
+          themeMode: themeState.isDarkMode ? ThemeMode.dark : ThemeMode.system,
+          home: Login(),
+        );
+      },
     );
   }
 }

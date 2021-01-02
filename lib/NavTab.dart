@@ -16,7 +16,7 @@ class _NavTabState extends State<NavTab> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white24,
+        color: Colors.transparent,
       ),
       margin: EdgeInsets.only(top: 40),
       child: widget.body,
