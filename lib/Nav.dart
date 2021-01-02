@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
-import 'package:skill_drills/tabs/profile/Settings.dart';
+import 'package:skill_drills/tabs/profile/settings/Settings.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'NavTab.dart';
 

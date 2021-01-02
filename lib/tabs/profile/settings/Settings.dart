@@ -82,20 +82,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             SettingsSection(
               title: 'General',
               tiles: [
-                SettingsTile(
-                  titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                  title: 'Activities',
-                  subtitle: '',
-                  leading: Icon(
-                    Icons.directions_walk,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                  onPressed: (BuildContext context) {
-                    navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
-                      return ActivitiesSettings();
-                    }));
-                  },
-                ),
                 SettingsTile.switchTile(
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
                   title: 'Rest Timer',
@@ -126,6 +112,25 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     });
 
                     Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(value);
+                  },
+                ),
+              ],
+            ),
+            SettingsSection(
+              title: 'Personalize',
+              tiles: [
+                SettingsTile(
+                  titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                  title: 'Sports',
+                  subtitle: 'Activities',
+                  leading: Icon(
+                    Icons.directions_run_rounded,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressed: (BuildContext context) {
+                    navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                      return ActivitiesSettings();
+                    }));
                   },
                 ),
               ],
