@@ -6,7 +6,7 @@ class SkillDrillsTheme {
   static final ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     primaryColor: Color.fromRGBO(2, 164, 221, 1),
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: Color(0xffF7F7F7),
     appBarTheme: AppBarTheme(
       color: Colors.white,
       iconTheme: IconThemeData(
