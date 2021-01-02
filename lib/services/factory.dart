@@ -18,33 +18,33 @@ Future<void> resetActivities() async {
     snapshot.docs.forEach((doc) {
       doc.reference.delete();
     });
-  });
 
-  // Setup the default activities in the user's activities collection
-  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').add({
-    'title': "Hockey",
-    'categories': [
-      {
-        "id": "1",
-        "title": "Shooting",
-        "description": null,
-      },
-      {
-        "id": "2",
-        "title": "Passing",
-        "description": null,
-      },
-      {
-        "id": "3",
-        "title": "Stickhandling",
-        "description": null,
-      },
-      {
-        "id": "4",
-        "title": "Skating",
-        "description": null,
-      },
-    ],
-    'created_by': null
+    // Setup the default activities in the user's activities collection
+    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').add({
+      'title': "Hockey",
+      'categories': [
+        {
+          "id": "1",
+          "title": "Shooting",
+          "description": null,
+        },
+        {
+          "id": "2",
+          "title": "Passing",
+          "description": null,
+        },
+        {
+          "id": "3",
+          "title": "Stickhandling",
+          "description": null,
+        },
+        {
+          "id": "4",
+          "title": "Skating",
+          "description": null,
+        },
+      ],
+      'created_by': null
+    });
   });
 }
