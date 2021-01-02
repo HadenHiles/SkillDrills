@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/tabs/profile/settings/ActivityDetail.dart';
 
 final user = FirebaseAuth.instance.currentUser;
 
@@ -52,7 +54,11 @@ class _ActivityItemState extends State<ActivityItem> {
                   iconSize: 28,
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
-                  onPressed: () {},
+                  onPressed: () {
+                    navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                      return ActivityDetail(activity: widget.activity);
+                    }));
+                  },
                   icon: Icon(
                     Icons.edit,
                     color: Theme.of(context).iconTheme.color,
@@ -61,7 +67,11 @@ class _ActivityItemState extends State<ActivityItem> {
                 ),
               ],
             ),
-            onTap: () {},
+            onTap: () {
+              navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                return ActivityDetail(activity: widget.activity);
+              }));
+            },
           ),
         ),
       ),
