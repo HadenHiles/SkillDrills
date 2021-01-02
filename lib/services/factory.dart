@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/models/Category.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -20,31 +22,20 @@ Future<void> resetActivities() async {
     });
 
     // Setup the default activities in the user's activities collection
-    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').add({
-      'title': "Hockey",
-      'categories': [
-        {
-          "id": "1",
-          "title": "Shooting",
-          "description": null,
-        },
-        {
-          "id": "2",
-          "title": "Passing",
-          "description": null,
-        },
-        {
-          "id": "3",
-          "title": "Stickhandling",
-          "description": null,
-        },
-        {
-          "id": "4",
-          "title": "Skating",
-          "description": null,
-        },
-      ],
-      'created_by': null
+    List<Activity> activities = [
+      Activity(
+        "Hockey",
+        [
+          Category("1", "Shooting", null),
+          Category("2", "Passing", null),
+          Category("3", "Stickhandling", null),
+          Category("4", "Skating", null),
+        ],
+        null,
+      ),
+    ];
+    activities.forEach((a) {
+      FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').add(a.toMap());
     });
   });
 }

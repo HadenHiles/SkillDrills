@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skill_drills/main.dart';
+import 'package:skill_drills/tabs/profile/settings/Activities.dart';
 import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
@@ -88,7 +90,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     Icons.directions_walk,
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  onPressed: (BuildContext context) {},
+                  onPressed: (BuildContext context) {
+                    navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                      return ActivitiesSettings();
+                    }));
+                  },
                 ),
                 SettingsTile.switchTile(
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
