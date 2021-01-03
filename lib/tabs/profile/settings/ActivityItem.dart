@@ -21,7 +21,7 @@ class _ActivityItemState extends State<ActivityItem> {
     return Container(
       child: Card(
         margin: EdgeInsets.only(bottom: 5, left: 5, right: 5),
-        color: Theme.of(context).colorScheme.primaryVariant,
+        color: Theme.of(context).cardTheme.color,
         elevation: 1.0,
         child: Padding(
           padding: EdgeInsets.all(2),
@@ -38,17 +38,14 @@ class _ActivityItemState extends State<ActivityItem> {
                       widget.activity.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ],
                 ),
               ],
             ),
             trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
                   iconSize: 28,

@@ -33,14 +33,14 @@ class _ActivityDetailState extends State<ActivityDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.primaryVariant,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
               collapsedHeight: 65,
               expandedHeight: 65,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.primaryVariant,
               floating: false,
               pinned: true,
               leading: Container(
@@ -64,39 +64,43 @@ class _ActivityDetailState extends State<ActivityDetail> {
                   centerTitle: false,
                   title: BasicTitle(title: widget.activity != null ? widget.activity.title : "Activity"),
                   background: Container(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
               ),
               actions: [
-                IconButton(
-                  icon: Icon(
-                    Icons.check,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  onPressed: widget.activity == null
-                      ? () {
-                          if (_formKey.currentState.validate()) {
-                            FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').add({
-                              'title': titleFieldController.text.toString().trim(),
-                              'categories': [],
-                              'created_by': user.uid ?? null,
-                            });
-
-                            Navigator.of(context).pop();
-                          }
-                        }
-                      : () {
-                          if (_formKey.currentState.validate()) {
-                            FirebaseFirestore.instance.runTransaction((transaction) async {
-                              transaction.update(widget.activity.reference, {
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.check,
+                      size: 28,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    onPressed: widget.activity == null
+                        ? () {
+                            if (_formKey.currentState.validate()) {
+                              FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').add({
                                 'title': titleFieldController.text.toString().trim(),
+                                'categories': [],
+                                'created_by': user.uid ?? null,
                               });
 
-                              navigatorKey.currentState.pop();
-                            });
+                              Navigator.of(context).pop();
+                            }
                           }
-                        },
+                        : () {
+                            if (_formKey.currentState.validate()) {
+                              FirebaseFirestore.instance.runTransaction((transaction) async {
+                                transaction.update(widget.activity.reference, {
+                                  'title': titleFieldController.text.toString().trim(),
+                                });
+
+                                navigatorKey.currentState.pop();
+                              });
+                            }
+                          },
+                  ),
                 ),
               ],
             ),
@@ -124,7 +128,16 @@ class _ActivityDetailState extends State<ActivityDetail> {
                             return null;
                           },
                           controller: titleFieldController,
-                          decoration: InputDecoration(labelText: "Title"),
+                          cursorColor: Theme.of(context).colorScheme.onPrimary,
+                          decoration: InputDecoration(
+                            labelText: "Title",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
                         ),
                       ],
                     ),

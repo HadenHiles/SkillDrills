@@ -6,6 +6,7 @@ class SkillDrillsTheme {
   static final ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     primaryColor: Color.fromRGBO(2, 164, 221, 1),
+    accentColor: Color.fromRGBO(2, 164, 221, 1),
     scaffoldBackgroundColor: Color(0xffF7F7F7),
     appBarTheme: AppBarTheme(
       color: Colors.white,
@@ -19,6 +20,7 @@ class SkillDrillsTheme {
       primaryVariant: Color(0xffF7F7F7),
       secondary: Color.fromRGBO(2, 164, 221, 1),
       onSecondary: Colors.white,
+      onBackground: Colors.black,
     ),
     cardTheme: CardTheme(
       color: Colors.white,
@@ -38,9 +40,11 @@ class SkillDrillsTheme {
       ),
       bodyText1: TextStyle(
         color: Colors.black87,
+        fontSize: 16,
       ),
       bodyText2: TextStyle(
         color: Colors.black87,
+        fontSize: 12,
       ),
     ),
   );
@@ -48,6 +52,7 @@ class SkillDrillsTheme {
   static final ThemeData darkTheme = ThemeData(
     backgroundColor: Color(0xff222222),
     primaryColor: Color.fromRGBO(2, 164, 221, 1),
+    accentColor: Color.fromRGBO(2, 164, 221, 1),
     scaffoldBackgroundColor: Color(0xff1A1A1A),
     appBarTheme: AppBarTheme(
       color: Color(0xff222222),
@@ -56,14 +61,15 @@ class SkillDrillsTheme {
       ),
     ),
     colorScheme: ColorScheme.light(
-      primary: Color(0xff222222),
-      onPrimary: Colors.white54,
-      primaryVariant: Color(0xff1A1A1A),
+      primary: Color(0xff1A1A1A),
+      onPrimary: Color.fromRGBO(255, 255, 255, 0.75),
+      primaryVariant: Color(0xff1D1D1D),
       secondary: Color.fromRGBO(2, 164, 221, 1),
       onSecondary: Colors.white,
+      onBackground: Colors.white,
     ),
     cardTheme: CardTheme(
-      color: Colors.black,
+      color: Color(0xff1F1F1F),
     ),
     iconTheme: IconThemeData(
       color: Color.fromRGBO(255, 255, 255, 0.8),

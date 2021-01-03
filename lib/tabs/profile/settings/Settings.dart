@@ -44,8 +44,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             SliverAppBar(
               collapsedHeight: 65,
               expandedHeight: 65,
-              backgroundColor: Theme.of(context).backgroundColor,
-              floating: false,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              floating: true,
               pinned: true,
               leading: Container(
                 margin: EdgeInsets.only(top: 10),
@@ -55,7 +55,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     color: Theme.of(context).colorScheme.onPrimary,
                     size: 28,
                   ),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    navigatorKey.currentState.pop();
+                  },
                 ),
               ),
               flexibleSpace: DecoratedBox(
@@ -68,7 +70,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   centerTitle: false,
                   title: BasicTitle(title: "Settings"),
                   background: Container(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
               ),
@@ -120,9 +122,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               title: 'Personalize',
               tiles: [
                 SettingsTile(
+                  title: 'Activities',
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                  title: 'Sports',
-                  subtitle: 'Activities',
+                  subtitle: '(Sports)',
+                  subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
                   leading: Icon(
                     Icons.directions_run_rounded,
                     color: Theme.of(context).colorScheme.onPrimary,

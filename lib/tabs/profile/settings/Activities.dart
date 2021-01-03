@@ -62,14 +62,14 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.primaryVariant,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
               collapsedHeight: 65,
               expandedHeight: 65,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.primaryVariant,
               floating: false,
               pinned: true,
               leading: Container(
@@ -93,7 +93,7 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   centerTitle: false,
                   title: BasicTitle(title: "Activites"),
                   background: Container(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
               ),

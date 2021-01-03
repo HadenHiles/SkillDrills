@@ -17,6 +17,8 @@ class _ProfileState extends State<Profile> {
   // Static variables
   final user = FirebaseAuth.instance.currentUser;
 
+  int _sessionCount = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +31,7 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(right: 15),
+                margin: EdgeInsets.only(right: 25),
                 child: FractionalTranslation(
                   translation: Offset(0.0, -0.15),
                   child: Align(
@@ -49,8 +51,9 @@ class _ProfileState extends State<Profile> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
+                    margin: EdgeInsets.only(bottom: 5),
                     child: Text(
-                      user.displayName != null && user.displayName.isNotEmpty ? user.displayName : "You",
+                      user.displayName != null && user.displayName.isNotEmpty ? user.displayName : user.email,
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -59,10 +62,10 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   Text(
-                    user.email,
+                    "$_sessionCount Sessions",
                     style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black87,
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ],

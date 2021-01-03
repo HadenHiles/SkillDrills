@@ -98,11 +98,11 @@ class _NavState extends State<Nav> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               iconTheme: Theme.of(context).iconTheme,
               actionsIconTheme: Theme.of(context).iconTheme,
-              floating: false,
+              floating: true,
               pinned: true,
               flexibleSpace: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).appBarTheme.backgroundColor,
+                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
                 ),
                 child: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
@@ -110,7 +110,7 @@ class _NavState extends State<Nav> {
                   centerTitle: _showLogoToolbar ? true : false,
                   title: _title,
                   background: Container(
-                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).appBarTheme.backgroundColor,
+                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ),
               ),
