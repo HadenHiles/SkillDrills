@@ -141,7 +141,7 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
     Widget continueButton = FlatButton(
       child: Text(
         "Reset",
-        style: TextStyle(color: Theme.of(context).primaryColor),
+        style: TextStyle(color: Colors.red),
       ),
       onPressed: () {
         resetActivities();
@@ -151,8 +151,14 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Reset Activities"),
-      content: Text("Are you sure you want to reset your activities? This can't be undone."),
+      title: Text(
+        "Reset Activities",
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontSize: 20,
+        ),
+      ),
+      content: Text("Are you sure you want to reset your activities?\n\nThis can't be undone."),
       actions: [
         cancelButton,
         continueButton,
