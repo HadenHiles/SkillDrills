@@ -83,6 +83,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           sections: [
             SettingsSection(
               title: 'General',
+              titleTextStyle: Theme.of(context).textTheme.headline6,
               tiles: [
                 SettingsTile.switchTile(
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
@@ -119,6 +120,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               ],
             ),
             SettingsSection(
+              titleTextStyle: Theme.of(context).textTheme.headline6,
               title: 'Personalize',
               tiles: [
                 SettingsTile(
