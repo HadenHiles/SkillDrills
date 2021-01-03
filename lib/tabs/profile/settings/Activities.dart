@@ -39,11 +39,9 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
         .toList();
 
     return items.length > 0
-        ? Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(top: 20.0),
-              children: items,
-            ),
+        ? ListView(
+            padding: EdgeInsets.only(top: 10),
+            children: items,
           )
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,

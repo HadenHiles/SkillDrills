@@ -26,10 +26,10 @@ Future<void> resetActivities() async {
       Activity(
         "Hockey",
         [
-          Category("1", "Shooting", null),
-          Category("2", "Passing", null),
-          Category("3", "Stickhandling", null),
-          Category("4", "Skating", null),
+          Category("Shooting"),
+          Category("Passing"),
+          Category("Stickhandling"),
+          Category("Skating"),
         ],
         null,
       ),

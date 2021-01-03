@@ -3,7 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/models/Category.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
+
+import 'CategoryItem.dart';
+
+final FirebaseAuth auth = FirebaseAuth.instance;
 
 class ActivityDetail extends StatefulWidget {
   ActivityDetail({Key key, this.activity}) : super(key: key);
@@ -15,19 +20,54 @@ class ActivityDetail extends StatefulWidget {
 }
 
 class _ActivityDetailState extends State<ActivityDetail> {
-  final user = FirebaseAuth.instance.currentUser;
-
   final _formKey = GlobalKey<FormState>();
-  // Create a text controller and use it to retrieve the current value of the TextField.
   final titleFieldController = TextEditingController();
+
+  final _categoryFormKey = GlobalKey<FormState>();
+  final categoryTitleFieldController = TextEditingController();
+
+  List<Category> _categories;
 
   @override
   void initState() {
     if (widget.activity != null) {
       titleFieldController.text = widget.activity.title;
+      _categories = widget.activity.categories;
     }
 
     super.initState();
+  }
+
+  Widget _buildCategoryList(BuildContext context) {
+    List<CategoryItem> categoryItems = _categories
+        .map((data) => CategoryItem(
+              category: data,
+              deleteCallback: _removeCategory,
+            ))
+        .toList();
+
+    return categoryItems.length > 0
+        ? ListView(
+            children: categoryItems,
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "There are no categories to display",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          );
+  }
+
+  void _removeCategory(Category category) {
+    setState(() {
+      _categories.remove(category);
+    });
   }
 
   @override
@@ -80,11 +120,13 @@ class _ActivityDetailState extends State<ActivityDetail> {
                     onPressed: widget.activity == null
                         ? () {
                             if (_formKey.currentState.validate()) {
-                              FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').add({
-                                'title': titleFieldController.text.toString().trim(),
-                                'categories': [],
-                                'created_by': user.uid ?? null,
-                              });
+                              FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').add(
+                                    Activity(
+                                      titleFieldController.text.toString().trim(),
+                                      _categories,
+                                      user.uid ?? null,
+                                    ).toMap(),
+                                  );
 
                               Navigator.of(context).pop();
                             }
@@ -92,9 +134,14 @@ class _ActivityDetailState extends State<ActivityDetail> {
                         : () {
                             if (_formKey.currentState.validate()) {
                               FirebaseFirestore.instance.runTransaction((transaction) async {
-                                transaction.update(widget.activity.reference, {
-                                  'title': titleFieldController.text.toString().trim(),
-                                });
+                                transaction.update(
+                                  widget.activity.reference,
+                                  Activity(
+                                    titleFieldController.text.toString().trim(),
+                                    _categories,
+                                    user.uid ?? null,
+                                  ).toMap(),
+                                );
 
                                 navigatorKey.currentState.pop();
                               });
@@ -108,7 +155,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
         },
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
@@ -124,6 +171,8 @@ class _ActivityDetailState extends State<ActivityDetail> {
                           validator: (String value) {
                             if (value.isEmpty) {
                               return 'Please enter a title';
+                            } else if (!RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
+                              return 'No special characters are allowed';
                             }
                             return null;
                           },
@@ -143,6 +192,87 @@ class _ActivityDetailState extends State<ActivityDetail> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Categories",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Text(
+                    "Tap category to edit",
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    child: Form(
+                      key: _categoryFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please enter a category name';
+                              } else if (!RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
+                                return 'No special characters are allowed';
+                              }
+
+                              return null;
+                            },
+                            controller: categoryTitleFieldController,
+                            cursorColor: Theme.of(context).colorScheme.onPrimary,
+                            decoration: InputDecoration(
+                                labelText: "Add Category",
+                                labelStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  fontSize: 14,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.add_circle,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 22,
+                                  ),
+                                  onPressed: () {
+                                    if (_categoryFormKey.currentState.validate()) {
+                                      setState(() {
+                                        _categories.add(Category(categoryTitleFieldController.text.toString().trim()));
+                                      });
+
+                                      categoryTitleFieldController.clear();
+                                      FocusScope.of(context).unfocus();
+                                    }
+                                  },
+                                )),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: _buildCategoryList(context),
               ),
             ),
           ],
