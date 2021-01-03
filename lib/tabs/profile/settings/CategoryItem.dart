@@ -5,9 +5,10 @@ import 'package:skill_drills/models/Category.dart';
 final user = FirebaseAuth.instance.currentUser;
 
 class CategoryItem extends StatefulWidget {
-  CategoryItem({Key key, this.category, this.deleteCallback}) : super(key: key);
+  CategoryItem({Key key, this.category, this.editCallback, this.deleteCallback}) : super(key: key);
 
   final Category category;
+  final Function editCallback;
   final Function deleteCallback;
 
   @override
@@ -61,7 +62,9 @@ class _CategoryItemState extends State<CategoryItem> {
                 ),
               ],
             ),
-            onTap: () {},
+            onTap: () {
+              widget.editCallback(widget.category);
+            },
           ),
         ),
       ),

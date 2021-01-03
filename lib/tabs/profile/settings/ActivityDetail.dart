@@ -25,8 +25,10 @@ class _ActivityDetailState extends State<ActivityDetail> {
 
   final _categoryFormKey = GlobalKey<FormState>();
   final categoryTitleFieldController = TextEditingController();
+  FocusNode _categoryTitleFocusNode;
 
   List<Category> _categories;
+  int _editingCategoryIndex;
 
   @override
   void initState() {
@@ -35,6 +37,8 @@ class _ActivityDetailState extends State<ActivityDetail> {
       _categories = widget.activity.categories;
     }
 
+    _categoryTitleFocusNode = FocusNode();
+
     super.initState();
   }
 
@@ -42,6 +46,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
     List<CategoryItem> categoryItems = _categories
         .map((data) => CategoryItem(
               category: data,
+              editCallback: _editCategory,
               deleteCallback: _removeCategory,
             ))
         .toList();
@@ -62,6 +67,16 @@ class _ActivityDetailState extends State<ActivityDetail> {
               ),
             ],
           );
+  }
+
+  void _editCategory(Category category) {
+    int editIndex = _categories.indexWhere((cat) => cat == category);
+    setState(() {
+      _editingCategoryIndex = editIndex;
+    });
+
+    categoryTitleFieldController.text = category.title;
+    _categoryTitleFocusNode.requestFocus();
   }
 
   void _removeCategory(Category category) {
@@ -204,7 +219,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   Text(
-                    "Tap category to edit",
+                    "Tap a category to edit",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -234,23 +249,30 @@ class _ActivityDetailState extends State<ActivityDetail> {
                               return null;
                             },
                             controller: categoryTitleFieldController,
+                            focusNode: _categoryTitleFocusNode,
                             cursorColor: Theme.of(context).colorScheme.onPrimary,
                             decoration: InputDecoration(
-                                labelText: "Add Category",
+                                labelText: _editingCategoryIndex != null ? "Edit Category" : "Add Category",
                                 labelStyle: TextStyle(
                                   color: Theme.of(context).colorScheme.onPrimary,
                                   fontSize: 14,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    Icons.add_circle,
+                                    _editingCategoryIndex != null ? Icons.check_circle : Icons.add_circle,
                                     color: Theme.of(context).primaryColor,
                                     size: 22,
                                   ),
                                   onPressed: () {
                                     if (_categoryFormKey.currentState.validate()) {
                                       setState(() {
-                                        _categories.add(Category(categoryTitleFieldController.text.toString().trim()));
+                                        if (_editingCategoryIndex != null) {
+                                          _categories
+                                              .replaceRange(_editingCategoryIndex, (_editingCategoryIndex + 1), [Category(categoryTitleFieldController.text.toString().trim())]);
+                                          _editingCategoryIndex = null;
+                                        } else {
+                                          _categories.add(Category(categoryTitleFieldController.text.toString().trim()));
+                                        }
                                       });
 
                                       categoryTitleFieldController.clear();
@@ -285,6 +307,8 @@ class _ActivityDetailState extends State<ActivityDetail> {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     titleFieldController.dispose();
+    categoryTitleFieldController.dispose();
+    _categoryTitleFocusNode.dispose();
     super.dispose();
   }
 }

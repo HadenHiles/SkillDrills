@@ -132,7 +132,9 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
     Widget cancelButton = FlatButton(
       child: Text(
         "Cancel",
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
       ),
       onPressed: () {
         Navigator.of(context).pop();
@@ -158,7 +160,13 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
           fontSize: 20,
         ),
       ),
-      content: Text("Are you sure you want to reset your activities?\n\nThis can't be undone."),
+      backgroundColor: Theme.of(context).backgroundColor,
+      content: Text(
+        "Are you sure you want to reset your activities?\n\nThis can't be undone.",
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
+      ),
       actions: [
         cancelButton,
         continueButton,
