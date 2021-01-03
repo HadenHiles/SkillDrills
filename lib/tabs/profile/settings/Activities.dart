@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/services/factory.dart';
 import 'package:skill_drills/tabs/profile/settings/ActivityItem.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
@@ -99,8 +100,71 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
             ),
           ];
         },
-        body: _buildActivities(context),
+        body: Column(
+          children: [
+            Flexible(
+              child: _buildActivities(context),
+            ),
+            Container(
+              width: double.infinity,
+              child: FlatButton(
+                padding: EdgeInsets.all(25),
+                child: Text(
+                  "Reset to defaults",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () {
+                  confirmResetDialog(context);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  void confirmResetDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text(
+        "Reset",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
+      onPressed: () {
+        resetActivities();
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Reset Activities"),
+      content: Text("Are you sure you want to reset your activities? This can't be undone."),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
