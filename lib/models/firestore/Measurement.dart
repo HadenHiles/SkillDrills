@@ -17,5 +17,15 @@ class Measurement {
         goal = map['goal'],
         countdown = map['countdown'] != null ? map['countdown'] : false;
 
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'type': type,
+      'value': value,
+      'goal': goal,
+      'countdown': countdown,
+    };
+  }
+
   Measurement.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

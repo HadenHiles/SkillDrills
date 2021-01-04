@@ -11,6 +11,8 @@ class Drill {
   final DrillType drillType;
   final DocumentReference reference;
 
+  Drill(this.title, this.description, this.activity, this.category, this.drillType, this.reference);
+
   Drill.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['title'] != null),
         assert(map['description'] != null),
@@ -22,6 +24,16 @@ class Drill {
         activity = map['activity'],
         category = map['category'],
         drillType = map['drill_type'];
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'description': description,
+      'activity': activity.toMap(),
+      'category': category.toMap(),
+      'drill_type': drillType.toMap(),
+    };
+  }
 
   Drill.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

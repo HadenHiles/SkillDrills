@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
+import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/Settings.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'NavTab.dart';
@@ -59,6 +60,22 @@ class _NavState extends State<Nav> {
     ),
     NavTab(
       title: BasicTitle(title: "Drills"),
+      actions: [
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: IconButton(
+            icon: Icon(
+              Icons.add,
+              size: 28,
+            ),
+            onPressed: () {
+              navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                return DrillDetail();
+              }));
+            },
+          ),
+        ),
+      ],
     ),
     NavTab(
       title: BasicTitle(title: "Routines"),
