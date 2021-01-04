@@ -81,7 +81,7 @@ class _NavState extends State<Nav> {
       _actions = [];
     });
 
-    initFactoryDefaults();
+    bootstrap();
 
     super.initState();
   }

@@ -2,10 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
+import 'package:skill_drills/models/firestore/SkillDrillsUser.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-void initFactoryDefaults() {
+void bootstrap() {
+  // Determine whether or not to add the user to the users collection
+  FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).get().then((snapshot) {
+    if (auth.currentUser.uid != null && !snapshot.exists) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(auth.currentUser.uid)
+          .set(SkillDrillsUser(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.photoURL).toMap());
+    }
+  });
+
+  // Determine whether or not to create (reset) the activities
   FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
     if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
       resetActivities();
