@@ -25,7 +25,6 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
     super.initState();
   }
 
-  //Loading counter value on start
   Widget _buildActivities(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').orderBy('title', descending: false).snapshots(),
@@ -54,7 +53,7 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "There are no items to display",
+                "There are no activities to display",
                 style: TextStyle(
                   fontSize: 16,
                 ),
