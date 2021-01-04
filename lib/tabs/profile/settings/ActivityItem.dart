@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skill_drills/main.dart';
-import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/models/SkillDrillsDialog.dart';
+import 'package:skill_drills/models/firestore/Activity.dart';
+import 'package:skill_drills/services/dialogs.dart';
 import 'package:skill_drills/tabs/profile/settings/ActivityDetail.dart';
 
 final user = FirebaseAuth.instance.currentUser;
 
 class ActivityItem extends StatefulWidget {
-  ActivityItem({Key key, this.activity}) : super(key: key);
+  ActivityItem({Key key, this.activity, this.deleteCallback}) : super(key: key);
 
   final Activity activity;
+  final Function deleteCallback;
 
   @override
   _ActivityItemState createState() => _ActivityItemState();
@@ -52,12 +55,24 @@ class _ActivityItemState extends State<ActivityItem> {
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   onPressed: () {
-                    navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
-                      return ActivityDetail(activity: widget.activity);
-                    }));
+                    confirmDialog(
+                        context,
+                        SkillDrillsDialog(
+                          "Delete \"${widget.activity.title}\"?",
+                          "Are you sure you want to delete this activity?\n\nThis action cannot be undone.",
+                          null,
+                          () {
+                            Navigator.of(context).pop();
+                          },
+                          "Delete",
+                          () {
+                            widget.deleteCallback(widget.activity);
+                            Navigator.of(context).pop();
+                          },
+                        ));
                   },
                   icon: Icon(
-                    Icons.edit,
+                    Icons.delete,
                     color: Theme.of(context).iconTheme.color,
                     size: 20,
                   ),

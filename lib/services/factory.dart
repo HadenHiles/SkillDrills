@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:skill_drills/models/Activity.dart';
-import 'package:skill_drills/models/Category.dart';
+import 'package:skill_drills/models/firestore/Activity.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 

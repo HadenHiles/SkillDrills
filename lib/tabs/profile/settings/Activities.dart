@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:skill_drills/models/Activity.dart';
+import 'package:skill_drills/main.dart';
+import 'package:skill_drills/models/firestore/Activity.dart';
+import 'package:skill_drills/models/SkillDrillsDialog.dart';
+import 'package:skill_drills/services/dialogs.dart';
 import 'package:skill_drills/services/factory.dart';
+import 'package:skill_drills/tabs/profile/settings/ActivityDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/ActivityItem.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
@@ -36,6 +40,7 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
     List<ActivityItem> items = snapshot
         .map((data) => ActivityItem(
               activity: Activity.fromSnapshot(data),
+              deleteCallback: _deleteActivity,
             ))
         .toList();
 
@@ -56,6 +61,10 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
               ),
             ],
           );
+  }
+
+  void _deleteActivity(Activity activity) {
+    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc(activity.reference.id).get().then((doc) => doc.reference.delete());
   }
 
   @override
@@ -96,7 +105,22 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   ),
                 ),
               ),
-              actions: [],
+              actions: [
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.add,
+                      size: 28,
+                    ),
+                    onPressed: () {
+                      navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
+                        return ActivityDetail();
+                      }));
+                    },
+                  ),
+                ),
+              ],
             ),
           ];
         },
@@ -117,68 +141,27 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   ),
                 ),
                 onPressed: () {
-                  confirmResetDialog(context);
+                  confirmDialog(
+                      context,
+                      SkillDrillsDialog(
+                        "Reset Activities?",
+                        "Are you sure you want to reset your activities?\n\nThis can't be undone.",
+                        "Cancel",
+                        () {
+                          Navigator.of(context).pop();
+                        },
+                        "Reset",
+                        () {
+                          resetActivities();
+                          Navigator.of(context).pop();
+                        },
+                      ));
                 },
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  void confirmResetDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text(
-        "Cancel",
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onBackground,
-        ),
-      ),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text(
-        "Reset",
-        style: TextStyle(color: Colors.red),
-      ),
-      onPressed: () {
-        resetActivities();
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(
-        "Reset Activities",
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontSize: 20,
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      content: Text(
-        "Are you sure you want to reset your activities?\n\nThis can't be undone.",
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onBackground,
-        ),
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

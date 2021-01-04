@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skill_drills/main.dart';
-import 'package:skill_drills/models/Activity.dart';
-import 'package:skill_drills/models/Category.dart';
+import 'package:skill_drills/models/firestore/Activity.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
 import 'CategoryItem.dart';
@@ -27,7 +27,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
   final categoryTitleFieldController = TextEditingController();
   FocusNode _categoryTitleFocusNode;
 
-  List<Category> _categories;
+  List<Category> _categories = [];
   int _editingCategoryIndex;
 
   @override
@@ -38,6 +38,16 @@ class _ActivityDetailState extends State<ActivityDetail> {
     }
 
     _categoryTitleFocusNode = FocusNode();
+
+    _categoryTitleFocusNode.addListener(() {
+      if (!_categoryTitleFocusNode.hasFocus) {
+        setState(() {
+          _editingCategoryIndex = null;
+          categoryTitleFieldController.clear();
+          _categoryTitleFocusNode.unfocus();
+        });
+      }
+    });
 
     super.initState();
   }
@@ -57,16 +67,35 @@ class _ActivityDetailState extends State<ActivityDetail> {
           )
         : Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "There are no categories to display",
-                style: TextStyle(
-                  fontSize: 16,
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: Center(
+                  child: Text(
+                    "No categories yet",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ],
           );
+  }
+
+  void _saveCategory(String value) {
+    setState(() {
+      if (_editingCategoryIndex != null) {
+        _categories.replaceRange(_editingCategoryIndex, (_editingCategoryIndex + 1), [Category(value)]);
+        _editingCategoryIndex = null;
+      } else {
+        _categories.add(Category(value));
+      }
+    });
+
+    categoryTitleFieldController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   void _editCategory(Category category) {
@@ -265,21 +294,13 @@ class _ActivityDetailState extends State<ActivityDetail> {
                                   ),
                                   onPressed: () {
                                     if (_categoryFormKey.currentState.validate()) {
-                                      setState(() {
-                                        if (_editingCategoryIndex != null) {
-                                          _categories
-                                              .replaceRange(_editingCategoryIndex, (_editingCategoryIndex + 1), [Category(categoryTitleFieldController.text.toString().trim())]);
-                                          _editingCategoryIndex = null;
-                                        } else {
-                                          _categories.add(Category(categoryTitleFieldController.text.toString().trim()));
-                                        }
-                                      });
-
-                                      categoryTitleFieldController.clear();
-                                      FocusScope.of(context).unfocus();
+                                      _saveCategory(categoryTitleFieldController.text.toString().trim());
                                     }
                                   },
                                 )),
+                            onFieldSubmitted: (value) {
+                              _saveCategory(value);
+                            },
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onBackground,
                             ),

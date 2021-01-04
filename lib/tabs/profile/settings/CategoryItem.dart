@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:skill_drills/models/Category.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
 
 final user = FirebaseAuth.instance.currentUser;
 
