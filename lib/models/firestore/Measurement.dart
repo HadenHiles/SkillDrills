@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Measurement {
-  final String id;
   final String title;
   final String type;
   final dynamic value;
@@ -10,10 +9,8 @@ class Measurement {
   final DocumentReference reference;
 
   Measurement.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['id'] != null),
-        assert(map['title'] != null),
+      : assert(map['title'] != null),
         assert(map['type'] != null),
-        id = map['id'],
         title = map['title'],
         type = map['type'],
         value = map['value'],
