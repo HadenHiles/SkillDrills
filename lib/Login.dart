@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
   // Load shared preferences
   void _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(prefs.getBool('dark_mode'));
+    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(prefs.getBool('dark_mode') ?? false);
   }
 
   @override
