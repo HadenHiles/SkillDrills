@@ -25,10 +25,13 @@ class _ActivityDetailState extends State<ActivityDetail> {
 
   final _categoryFormKey = GlobalKey<FormState>();
   final categoryTitleFieldController = TextEditingController();
+  bool _validateCategoryTitle = true;
   FocusNode _categoryTitleFocusNode;
 
   List<Category> _categories = [];
   int _editingCategoryIndex;
+
+  AutovalidateMode _autoValidateMode = AutovalidateMode.onUserInteraction;
 
   @override
   void initState() {
@@ -42,10 +45,13 @@ class _ActivityDetailState extends State<ActivityDetail> {
     _categoryTitleFocusNode.addListener(() {
       if (!_categoryTitleFocusNode.hasFocus) {
         setState(() {
+          _validateCategoryTitle = false;
           _editingCategoryIndex = null;
           categoryTitleFieldController.clear();
           _categoryTitleFocusNode.unfocus();
         });
+      } else {
+        _validateCategoryTitle = true;
       }
     });
 
@@ -63,6 +69,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
 
     return categoryItems.length > 0
         ? ListView(
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
             children: categoryItems,
           )
         : Column(
@@ -73,7 +80,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
                 margin: EdgeInsets.only(top: 20),
                 child: Center(
                   child: Text(
-                    "No categories yet",
+                    "No skills yet",
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -208,14 +215,15 @@ class _ActivityDetailState extends State<ActivityDetail> {
                 children: [
                   Form(
                     key: _formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: _autoValidateMode,
                     child: Column(
                       children: [
                         TextFormField(
+                          autovalidateMode: _autoValidateMode,
                           validator: (String value) {
                             if (value.isEmpty) {
                               return 'Please enter a title';
-                            } else if (!RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
+                            } else if (value.isNotEmpty && !RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
                               return 'No special characters are allowed';
                             }
                             return null;
@@ -244,11 +252,11 @@ class _ActivityDetailState extends State<ActivityDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Categories",
+                    "Skills",
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   Text(
-                    "Tap a category to edit",
+                    "Tap a skill to edit",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -263,15 +271,15 @@ class _ActivityDetailState extends State<ActivityDetail> {
                   Container(
                     child: Form(
                       key: _categoryFormKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autovalidateMode: _autoValidateMode,
                       child: Column(
                         children: [
                           TextFormField(
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (String value) {
-                              if (value.isEmpty) {
-                                return 'Please enter a category name';
-                              } else if (!RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
+                              if (value.isEmpty && _validateCategoryTitle) {
+                                return 'Please enter a skill name';
+                              } else if (value.isNotEmpty && !RegExp(r"^[a-zA-Z0-9 ]+$").hasMatch(value)) {
                                 return 'No special characters are allowed';
                               }
 
@@ -281,7 +289,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
                             focusNode: _categoryTitleFocusNode,
                             cursorColor: Theme.of(context).colorScheme.onPrimary,
                             decoration: InputDecoration(
-                                labelText: _editingCategoryIndex != null ? "Edit Category" : "Add Category",
+                                labelText: _editingCategoryIndex != null ? "Edit Skill" : "Add Skill",
                                 labelStyle: TextStyle(
                                   color: Theme.of(context).colorScheme.onPrimary,
                                   fontSize: 14,
@@ -299,7 +307,9 @@ class _ActivityDetailState extends State<ActivityDetail> {
                                   },
                                 )),
                             onFieldSubmitted: (value) {
-                              _saveCategory(value);
+                              if (_categoryFormKey.currentState.validate()) {
+                                _saveCategory(value);
+                              }
                             },
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onBackground,
@@ -314,7 +324,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
             ),
             Flexible(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.only(top: 5),
                 child: _buildCategoryList(context),
               ),
             ),
