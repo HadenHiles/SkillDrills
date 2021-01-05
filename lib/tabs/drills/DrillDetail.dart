@@ -19,11 +19,13 @@ class DrillDetail extends StatefulWidget {
 class _DrillDetailState extends State<DrillDetail> {
   final _formKey = GlobalKey<FormState>();
   final titleFieldController = TextEditingController();
+  final descriptionFieldController = TextEditingController();
 
   @override
   void initState() {
     if (widget.drill != null) {
       titleFieldController.text = widget.drill.title;
+      descriptionFieldController.text = widget.drill.description;
     }
 
     super.initState();
@@ -141,6 +143,21 @@ class _DrillDetailState extends State<DrillDetail> {
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                        ),
+                        TextFormField(
+                          controller: descriptionFieldController,
+                          cursorColor: Theme.of(context).colorScheme.onPrimary,
+                          decoration: InputDecoration(
+                            labelText: "Description",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          minLines: 4,
+                          maxLines: 6,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
