@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:select_dialog/select_dialog.dart';
 import 'package:skill_drills/main.dart';
+import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
@@ -20,6 +22,9 @@ class _DrillDetailState extends State<DrillDetail> {
   final _formKey = GlobalKey<FormState>();
   final titleFieldController = TextEditingController();
   final descriptionFieldController = TextEditingController();
+
+  Activity _activity;
+  List<Activity> _activities;
 
   @override
   void initState() {
@@ -162,6 +167,55 @@ class _DrillDetailState extends State<DrillDetail> {
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
+                        ListTile(
+                          leading: Text("Skill", style: Theme.of(context).textTheme.bodyText1),
+                          trailing: Text(_activity?.title ?? "Choose"),
+                          onTap: () {
+                            FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
+                              List<Activity> activities = [];
+                              if (snapshot.docs.length > 0) {
+                                snapshot.docs.forEach((doc) {
+                                  activities.add(Activity.fromSnapshot(doc));
+                                });
+
+                                setState(() {
+                                  _activities = activities;
+                                  _activity = activities[0];
+                                });
+
+                                SelectDialog.showModal<Activity>(
+                                  context,
+                                  label: "Choose a Skill",
+                                  items: _activities,
+                                  selectedValue: _activity,
+                                  itemBuilder: (BuildContext context, Activity activity, bool isSelected) {
+                                    return Container(
+                                      decoration: !isSelected
+                                          ? null
+                                          : BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5),
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                      child: ListTile(
+                                        selected: isSelected,
+                                        title: Text(activity.title ?? ""),
+                                      ),
+                                    );
+                                  },
+                                  onFind: (String filter) => _getActivities(filter),
+                                  onChange: (selected) {
+                                    setState(() {
+                                      _activity = selected;
+                                    });
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -172,6 +226,16 @@ class _DrillDetailState extends State<DrillDetail> {
         ),
       ),
     );
+  }
+
+  Future<List<Activity>> _getActivities(filter) async {
+    List<Activity> activities = [];
+
+    await Future.forEach(_activities, (a) async {
+      activities.add(a);
+    });
+
+    return activities;
   }
 
   @override
