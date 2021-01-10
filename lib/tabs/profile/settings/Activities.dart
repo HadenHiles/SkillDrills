@@ -70,7 +70,15 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
   }
 
   void _deleteActivity(Activity activity) {
-    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc(activity.reference.id).get().then((doc) => doc.reference.delete());
+    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc(activity.reference.id).get().then((doc) {
+      doc.reference.collection('categories').get().then((catSnapshots) {
+        catSnapshots.docs.forEach((cDoc) {
+          cDoc.reference.delete();
+        });
+      });
+
+      doc.reference.delete();
+    });
   }
 
   @override
