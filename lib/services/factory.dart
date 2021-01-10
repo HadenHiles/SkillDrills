@@ -25,8 +25,16 @@ void bootstrap() {
 // Reset / initialize the activities for the current user
 Future<void> resetActivities() async {
   // Clear out any existing activities for the signed in user
-  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
-    snapshot.docs.forEach((doc) {
+  FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
+    await Future.forEach(snapshot.docs, (doc) {
+      // Delete the activities categories first
+      doc.reference.collection('categories').get().then((categorySnapshots) {
+        categorySnapshots.docs.forEach((cDoc) {
+          cDoc.reference.delete();
+        });
+      });
+
+      // Then delete the activity itself
       doc.reference.delete();
     });
 

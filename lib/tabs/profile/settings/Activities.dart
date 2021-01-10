@@ -29,7 +29,14 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').orderBy('title', descending: false).snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return LinearProgressIndicator();
+          if (!snapshot.hasData)
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+              ],
+            );
 
           return _buildActivityList(context, snapshot.data.docs);
         });
