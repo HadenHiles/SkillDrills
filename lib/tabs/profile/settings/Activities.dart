@@ -53,7 +53,7 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "There are no activities to display",
+                "There are no sports (activities) to display",
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -98,7 +98,18 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   collapseMode: CollapseMode.parallax,
                   titlePadding: null,
                   centerTitle: false,
-                  title: BasicTitle(title: "Activites"),
+                  title: Row(
+                    children: [
+                      BasicTitle(title: "Sports"),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Text(
+                          "(Activities)",
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ),
+                    ],
+                  ),
                   background: Container(
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
