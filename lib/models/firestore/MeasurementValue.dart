@@ -5,7 +5,7 @@ import 'package:skill_drills/models/firestore/Measurement.dart';
 /// @value The value of the saved measurement
 class MeasurementValue extends Measurement {
   final dynamic value;
-  final DocumentReference reference;
+  DocumentReference reference;
 
   MeasurementValue.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),

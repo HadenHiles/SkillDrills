@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// @type A string representation of the measurement type (count, duration)
 class Measurement {
   final String type;
-  final DocumentReference reference;
+  DocumentReference reference;
 
   Measurement.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),

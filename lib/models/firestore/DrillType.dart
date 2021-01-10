@@ -5,9 +5,9 @@ class DrillType {
   final String title;
   final String descriptor;
   List<Measurement> measurements;
-  final DocumentReference reference;
+  DocumentReference reference;
 
-  DrillType(this.title, this.descriptor, this.reference);
+  DrillType(this.title, this.descriptor);
 
   DrillType.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['title'] != null),

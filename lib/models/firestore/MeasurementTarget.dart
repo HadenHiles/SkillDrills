@@ -7,7 +7,7 @@ import 'package:skill_drills/models/firestore/Measurement.dart';
 class MeasurementTarget extends Measurement {
   final dynamic target;
   final bool reverse;
-  final DocumentReference reference;
+  DocumentReference reference;
 
   MeasurementTarget.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),

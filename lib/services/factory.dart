@@ -191,7 +191,19 @@ void bootstrapDrillTypes() {
   FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) {
     if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
       // User doesn't have drill types
-      List<DrillType> drillTypes = [];
+      List<DrillType> drillTypes = [
+        DrillType("Reps", "Number of repetitions"),
+        DrillType("Score", "Number of successful attempts out of the set total"),
+        DrillType("Time elapsed", "How long the drill was performed"),
+        DrillType("Timer", "Countdown from the set duration"),
+        DrillType("Reps in time", "Number of repetitions in the set duration"),
+        DrillType("Score in time", "How many successful attempts out of x in the set duration"),
+        DrillType("Time elapsed vs. Target Time", "How long the drill was performed versus the set target time"),
+        DrillType("Time to perform reps", "How long it took to do the set number of reps"),
+        DrillType("Time to get score", "How long it took to get the set score"),
+        DrillType("Weighted reps", "Number of repetitions with the set weight"),
+        DrillType("Assisted reps", "Number of repetitions with the set assisted weight"),
+      ];
     }
   });
 }
