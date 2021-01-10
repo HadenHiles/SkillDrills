@@ -10,10 +10,7 @@ void bootstrap() {
   // Determine whether or not to add the user to the users collection
   FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).get().then((snapshot) {
     if (auth.currentUser.uid != null && !snapshot.exists) {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(auth.currentUser.uid)
-          .set(SkillDrillsUser(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.photoURL).toMap());
+      FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).set(SkillDrillsUser(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.photoURL).toMap());
     }
   });
 
@@ -37,17 +34,93 @@ Future<void> resetActivities() async {
     List<Activity> activities = [
       Activity(
         "Hockey",
-        [
-          Category("Shooting"),
-          Category("Passing"),
-          Category("Stickhandling"),
-          Category("Skating"),
-        ],
         null,
       ),
     ];
     activities.forEach((a) {
-      FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').add(a.toMap());
+      DocumentReference activity = FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc();
+      a.id = activity.id;
+      activity.set(a.toMap());
+
+      if (a.title == "Hockey") {
+        List<Category> categories = [
+          Category("Skating"),
+          Category("Shooting"),
+          Category("Stickhandling"),
+          Category("Passing"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(a, c);
+        });
+      } else if (a.title == "Basketball") {
+        List<Category> categories = [
+          Category("Shooting"),
+          Category("Rebounding"),
+          Category("Passing"),
+          Category("Dribbling"),
+          Category("Blocking"),
+          Category("Stealing"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(a, c);
+        });
+      } else if (a.title == "Baseball") {
+        List<Category> categories = [
+          Category("Hitting"),
+          Category("Bunting"),
+          Category("Throwing"),
+          Category("Pitching"),
+          Category("Base Running"),
+          Category("Stealing"),
+          Category("Sliding"),
+          Category("Ground Balls"),
+          Category("Pop Fly's"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(a, c);
+        });
+      } else if (a.title == "Golf") {
+        List<Category> categories = [
+          Category("Drive"),
+          Category("Approach"),
+          Category("Putt"),
+          Category("Lay-Up"),
+          Category("Chip"),
+          Category("Punch"),
+          Category("Flop"),
+          Category("Draw"),
+          Category("Fade"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(a, c);
+        });
+      } else if (a.title == "Weight Training") {
+        List<Category> categories = [
+          Category("Core"),
+          Category("Arms"),
+          Category("Back"),
+          Category("Chest"),
+          Category("Legs"),
+          Category("Shoulders"),
+          Category("Olympic"),
+          Category("Full Body"),
+          Category("Cardio"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(a, c);
+        });
+      }
     });
   });
+}
+
+void _saveActivityCategory(a, c) {
+  DocumentReference category = FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc(a.id).collection('categories').doc();
+  c.id = category.id;
+  category.set(c.toMap());
 }

@@ -124,9 +124,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               title: 'Personalize',
               tiles: [
                 SettingsTile(
-                  title: 'Activities',
+                  title: 'Sports',
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                  subtitle: '(Sports)',
+                  subtitle: '(Activities)',
                   subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
                   leading: Icon(
                     Icons.directions_run_rounded,
