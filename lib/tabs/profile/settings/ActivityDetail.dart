@@ -171,28 +171,52 @@ class _ActivityDetailState extends State<ActivityDetail> {
                     onPressed: widget.activity == null
                         ? () {
                             if (_formKey.currentState.validate()) {
-                              FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').add(
-                                    Activity(
-                                      titleFieldController.text.toString().trim(),
-                                      _categories,
-                                      user.uid ?? null,
-                                    ).toMap(),
-                                  );
+                              // Create the activity
+                              Activity a = Activity(
+                                titleFieldController.text.toString().trim(),
+                                user.uid ?? null,
+                              );
+                              DocumentReference activity = FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').doc();
+                              a.id = activity.id;
+                              activity.set(a.toMap());
+
+                              // Add the categories for the activity
+                              _categories.forEach((c) {
+                                DocumentReference category = FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').doc(a.id).collection('categories').doc();
+                                c.id = category.id;
+                                category.set(c.toMap());
+                              });
 
                               Navigator.of(context).pop();
                             }
                           }
                         : () {
                             if (_formKey.currentState.validate()) {
+                              // Setup updates for the top level activity
+                              Map<String, dynamic> activityMap = {
+                                "title": titleFieldController.text.toString().trim(),
+                                "created_by": user.uid ?? null,
+                              };
+
                               FirebaseFirestore.instance.runTransaction((transaction) async {
                                 transaction.update(
                                   widget.activity.reference,
-                                  Activity(
-                                    titleFieldController.text.toString().trim(),
-                                    _categories,
-                                    user.uid ?? null,
-                                  ).toMap(),
+                                  activityMap,
                                 );
+
+                                // Remove the old categories
+                                widget.activity.reference.collection('categories').get().then((snapshots) {
+                                  snapshots.docs.forEach((doc) {
+                                    doc.reference.delete();
+                                  });
+                                });
+
+                                // Save the updated categories
+                                _categories.forEach((c) {
+                                  DocumentReference category = widget.activity.reference.collection('categories').doc();
+                                  c.id = category.id;
+                                  category.set(c.toMap());
+                                });
 
                                 navigatorKey.currentState.pop();
                               });
