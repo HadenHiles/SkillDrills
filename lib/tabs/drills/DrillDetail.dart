@@ -190,59 +190,67 @@ class _DrillDetailState extends State<DrillDetail> {
                 ),
               ),
               onTap: () {
-                FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
+                FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
                   List<Activity> activities = [];
                   if (snapshot.docs.length > 0) {
-                    snapshot.docs.forEach((doc) {
-                      activities.add(Activity.fromSnapshot(doc));
-                    });
+                    await Future.forEach(snapshot.docs, (doc) async {
+                      Activity a = Activity.fromSnapshot(doc);
+                      await _getCategories(doc.reference).then((categories) {
+                        a.categories = categories;
+                        activities.add(a);
+                      });
+                    }).then((_) {
+                      setState(() {
+                        _activities = activities;
+                        _activity = _activity == null ? activities[0] : _activity;
+                      });
 
-                    setState(() {
-                      _activities = activities;
-                      _activity = _activity == null ? activities[0] : _activity;
-                    });
-
-                    SelectDialog.showModal<Activity>(
-                      context,
-                      label: "Choose Sport",
-                      items: _activities,
-                      showSearchBox: false,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      alwaysShowScrollBar: true,
-                      selectedValue: _activity,
-                      itemBuilder: (BuildContext context, Activity activity, bool isSelected) {
-                        return Container(
-                          decoration: !isSelected
-                              ? null
-                              : BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Theme.of(context).colorScheme.primaryVariant,
-                                  border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary,
+                      SelectDialog.showModal<Activity>(
+                        context,
+                        label: "Choose Sport",
+                        items: _activities,
+                        showSearchBox: false,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        alwaysShowScrollBar: true,
+                        selectedValue: _activity,
+                        itemBuilder: (BuildContext context, Activity activity, bool isSelected) {
+                          return Container(
+                            decoration: !isSelected
+                                ? null
+                                : BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                    border: Border.all(
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
                                   ),
-                                ),
-                          child: ListTile(
-                            selected: isSelected,
-                            tileColor: Theme.of(context).colorScheme.primary,
-                            title: Text(
-                              activity.title ?? "",
-                              style: Theme.of(context).textTheme.bodyText1,
+                            child: ListTile(
+                              selected: isSelected,
+                              tileColor: Theme.of(context).colorScheme.primary,
+                              title: Text(
+                                activity.title ?? "",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      onChange: (selected) {
-                        setState(() {
-                          _activity = selected;
-                          _selectedCategories = [];
-                        });
-                      },
-                    );
+                          );
+                        },
+                        onChange: (selected) async {
+                          await _getCategories(selected.reference).then((cats) async {
+                            selected.categories = cats;
+
+                            setState(() {
+                              _activity = selected;
+                              _selectedCategories = [];
+                            });
+                          });
+                        },
+                      );
+                    });
                   }
                 });
               },
             ),
-            _activity.categories.length < 1
+            (_activity.categories?.length ?? 0) < 1
                 ? Container()
                 : ListTile(
                     contentPadding: EdgeInsets.symmetric(
@@ -312,11 +320,20 @@ class _DrillDetailState extends State<DrillDetail> {
     );
   }
 
+  Future<List<Category>> _getCategories(DocumentReference aDoc) async {
+    List<Category> categories = [];
+    return await aDoc.collection('categories').get().then((catSnapshot) async {
+      catSnapshot.docs.forEach((cDoc) {
+        categories.add(Category.fromSnapshot(cDoc));
+      });
+    }).then((_) => categories);
+  }
+
   String _outputCategories() {
     String catString = "";
 
-    _activity.categories.asMap().forEach((i, c) {
-      catString += (i + 1 != _activity.categories.length || _activity.categories?.length == 1) ? c.title + ", " : c.title;
+    _selectedCategories.asMap().forEach((i, c) {
+      catString += (i != _selectedCategories.length - 1 && _selectedCategories.length != 1) ? c.title + ", " : c.title;
     });
 
     return catString;
