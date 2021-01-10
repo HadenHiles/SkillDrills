@@ -2,19 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
+import 'package:skill_drills/models/firestore/DrillType.dart';
 import 'package:skill_drills/models/firestore/SkillDrillsUser.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
 void bootstrap() {
-  // Determine whether or not to add the user to the users collection
+  addUser();
+  bootstrapActivities();
+}
+
+/// Add user to users collection
+void addUser() {
   FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).get().then((snapshot) {
     if (auth.currentUser.uid != null && !snapshot.exists) {
       FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).set(SkillDrillsUser(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.photoURL).toMap());
     }
   });
+}
 
-  // Determine whether or not to create (reset) the activities
+/**
+ * ACTIVITY functions
+ */
+
+/// Bootstrap the activities if user has none (first launch)
+void bootstrapActivities() {
   FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
     if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
       resetActivities();
@@ -22,7 +34,7 @@ void bootstrap() {
   });
 }
 
-// Reset / initialize the activities for the current user
+/// Reset activities for the current user
 Future<void> resetActivities() async {
   // Clear out any existing activities for the signed in user
   FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
@@ -163,8 +175,23 @@ Future<void> resetActivities() async {
   });
 }
 
+/// Save individual category to activity categories collection
 void _saveActivityCategory(a, c) {
   DocumentReference category = FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc(a.id).collection('categories').doc();
   c.id = category.id;
   category.set(c.toMap());
+}
+
+/**
+ * DRILL TYPE functions
+ */
+
+/// Bootstrap the drill types with our predetermined drill types
+void bootstrapDrillTypes() {
+  FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) {
+    if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
+      // User doesn't have drill types
+      List<DrillType> drillTypes = [];
+    }
+  });
 }

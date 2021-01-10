@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'Measurement.dart';
+import 'package:skill_drills/models/firestore/Measurement.dart';
 
 class DrillType {
   final String title;
   final String descriptor;
-  final List<Measurement> measurements;
+  List<Measurement> measurements;
   final DocumentReference reference;
 
-  DrillType(this.title, this.descriptor, this.measurements, this.reference);
+  DrillType(this.title, this.descriptor, this.reference);
 
   DrillType.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['title'] != null),
@@ -19,15 +18,9 @@ class DrillType {
         measurements = map['measurements'];
 
   Map<String, dynamic> toMap() {
-    List<Map> measures = [];
-    measurements.forEach((m) {
-      measures.add(m.toMap());
-    });
-
     return {
       'title': title,
       'descriptor': descriptor,
-      'measurements': measures,
     };
   }
 
