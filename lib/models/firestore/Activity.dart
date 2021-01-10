@@ -14,19 +14,13 @@ class Activity {
       : assert(map['title'] != null),
         id = map['id'],
         title = map['title'],
-        categories = mapCategories(map['categories']),
+        categories = map['categories'],
         createdBy = map['created_by'];
 
   Map<String, dynamic> toMap() {
-    List<Map> cats = [];
-    categories.forEach((cat) {
-      cats.add(cat.toMap());
-    });
-
     return {
       'id': id,
       'title': title,
-      'categories': cats,
       'created_by': createdBy,
     };
   }
@@ -42,8 +36,4 @@ class Activity {
 
   @override
   int get hashCode => id.hashCode ^ title.hashCode ^ createdBy.hashCode;
-}
-
-List<Category> mapCategories(List<dynamic> categories) {
-  return categories.map((cat) => Category.fromMap(cat)).toList();
 }

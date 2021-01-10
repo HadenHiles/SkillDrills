@@ -37,7 +37,16 @@ class _ActivityDetailState extends State<ActivityDetail> {
   void initState() {
     if (widget.activity != null) {
       titleFieldController.text = widget.activity.title;
-      _categories = widget.activity.categories;
+      widget.activity.reference.collection('categories').get().then((snapshots) {
+        List<Category> categories = [];
+        snapshots.docs.forEach((doc) {
+          categories.add(Category.fromSnapshot(doc));
+        });
+
+        setState(() {
+          _categories = categories;
+        });
+      });
     }
 
     _categoryTitleFocusNode = FocusNode();
@@ -182,7 +191,7 @@ class _ActivityDetailState extends State<ActivityDetail> {
 
                               // Add the categories for the activity
                               _categories.forEach((c) {
-                                DocumentReference category = FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').doc(a.id).collection('categories').doc();
+                                DocumentReference category = activity.collection('categories').doc();
                                 c.id = category.id;
                                 category.set(c.toMap());
                               });
@@ -209,13 +218,13 @@ class _ActivityDetailState extends State<ActivityDetail> {
                                   snapshots.docs.forEach((doc) {
                                     doc.reference.delete();
                                   });
-                                });
 
-                                // Save the updated categories
-                                _categories.forEach((c) {
-                                  DocumentReference category = widget.activity.reference.collection('categories').doc();
-                                  c.id = category.id;
-                                  category.set(c.toMap());
+                                  // Save the updated categories
+                                  _categories.forEach((c) {
+                                    DocumentReference category = FirebaseFirestore.instance.collection('activities').doc(user.uid).collection('activities').doc(widget.activity.id).collection('categories').doc();
+                                    c.id = category.id;
+                                    category.set(c.toMap());
+                                  });
                                 });
 
                                 navigatorKey.currentState.pop();

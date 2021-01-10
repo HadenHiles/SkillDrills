@@ -36,6 +36,26 @@ Future<void> resetActivities() async {
         "Hockey",
         null,
       ),
+      Activity(
+        "Basketball",
+        null,
+      ),
+      Activity(
+        "Baseball",
+        null,
+      ),
+      Activity(
+        "Golf",
+        null,
+      ),
+      Activity(
+        "Soccer",
+        null,
+      ),
+      Activity(
+        "Weight Training",
+        null,
+      ),
     ];
     activities.forEach((a) {
       DocumentReference activity = FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').doc();
@@ -51,7 +71,7 @@ Future<void> resetActivities() async {
         ];
 
         categories.forEach((c) {
-          _saveActivityCategory(a, c);
+          _saveActivityCategory(activity, c);
         });
       } else if (a.title == "Basketball") {
         List<Category> categories = [
@@ -64,7 +84,7 @@ Future<void> resetActivities() async {
         ];
 
         categories.forEach((c) {
-          _saveActivityCategory(a, c);
+          _saveActivityCategory(activity, c);
         });
       } else if (a.title == "Baseball") {
         List<Category> categories = [
@@ -80,7 +100,7 @@ Future<void> resetActivities() async {
         ];
 
         categories.forEach((c) {
-          _saveActivityCategory(a, c);
+          _saveActivityCategory(activity, c);
         });
       } else if (a.title == "Golf") {
         List<Category> categories = [
@@ -96,7 +116,23 @@ Future<void> resetActivities() async {
         ];
 
         categories.forEach((c) {
-          _saveActivityCategory(a, c);
+          _saveActivityCategory(activity, c);
+        });
+      } else if (a.title == "Soccer") {
+        List<Category> categories = [
+          Category("Ball Control"),
+          Category("Passing"),
+          Category("Stamina"),
+          Category("Dribbling"),
+          Category("Shooting"),
+          Category("Penalty Shots"),
+          Category("Free Kicks"),
+          Category("Keep-up"),
+          Category("Tricks/Moves"),
+        ];
+
+        categories.forEach((c) {
+          _saveActivityCategory(activity, c);
         });
       } else if (a.title == "Weight Training") {
         List<Category> categories = [
@@ -112,7 +148,7 @@ Future<void> resetActivities() async {
         ];
 
         categories.forEach((c) {
-          _saveActivityCategory(a, c);
+          _saveActivityCategory(activity, c);
         });
       }
     });
