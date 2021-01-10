@@ -36,6 +36,25 @@ class _DrillDetailState extends State<DrillDetail> {
       _descriptionFieldController.text = widget.drill.description;
     }
 
+    // Load the activities
+    FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
+      List<Activity> activities = [];
+      if (snapshot.docs.length > 0) {
+        await Future.forEach(snapshot.docs, (doc) async {
+          Activity a = Activity.fromSnapshot(doc);
+          await _getCategories(doc.reference).then((categories) {
+            a.categories = categories;
+            activities.add(a);
+          });
+        }).then((_) {
+          setState(() {
+            _activities = activities;
+            _activity = _activity == null ? activities[0] : _activity;
+          });
+        });
+      }
+    });
+
     super.initState();
   }
 
@@ -182,29 +201,22 @@ class _DrillDetailState extends State<DrillDetail> {
                 horizontal: 20,
               ),
               leading: Text("Sport", style: Theme.of(context).textTheme.bodyText1),
-              trailing: Text(
-                _activity.title.isNotEmpty ? _activity.title : "choose",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 14,
-                ),
-              ),
-              onTap: () {
-                FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
-                  List<Activity> activities = [];
-                  if (snapshot.docs.length > 0) {
-                    await Future.forEach(snapshot.docs, (doc) async {
-                      Activity a = Activity.fromSnapshot(doc);
-                      await _getCategories(doc.reference).then((categories) {
-                        a.categories = categories;
-                        activities.add(a);
-                      });
-                    }).then((_) {
-                      setState(() {
-                        _activities = activities;
-                        _activity = _activity == null ? activities[0] : _activity;
-                      });
-
+              trailing: _activities == null
+                  ? Container(
+                      height: 25,
+                      width: 25,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(
+                      _activity.title.isNotEmpty ? _activity.title : "choose",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 14,
+                      ),
+                    ),
+              onTap: _activities == null
+                  ? null
+                  : () {
                       SelectDialog.showModal<Activity>(
                         context,
                         label: "Choose Sport",
@@ -234,6 +246,13 @@ class _DrillDetailState extends State<DrillDetail> {
                             ),
                           );
                         },
+                        emptyBuilder: (context) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [CircularProgressIndicator()],
+                          );
+                        },
                         onChange: (selected) async {
                           await _getCategories(selected.reference).then((cats) async {
                             selected.categories = cats;
@@ -245,10 +264,7 @@ class _DrillDetailState extends State<DrillDetail> {
                           });
                         },
                       );
-                    });
-                  }
-                });
-              },
+                    },
             ),
             (_activity.categories?.length ?? 0) < 1
                 ? Container()
