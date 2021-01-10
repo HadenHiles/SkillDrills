@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
@@ -20,17 +21,19 @@ class DrillDetail extends StatefulWidget {
 
 class _DrillDetailState extends State<DrillDetail> {
   final _formKey = GlobalKey<FormState>();
-  final titleFieldController = TextEditingController();
-  final descriptionFieldController = TextEditingController();
+  final _titleFieldController = TextEditingController();
+  final _descriptionFieldController = TextEditingController();
 
-  Activity _activity;
   List<Activity> _activities;
+  Activity _activity = Activity("", null);
+
+  List<Category> _selectedCategories = [];
 
   @override
   void initState() {
     if (widget.drill != null) {
-      titleFieldController.text = widget.drill.title;
-      descriptionFieldController.text = widget.drill.description;
+      _titleFieldController.text = widget.drill.title;
+      _descriptionFieldController.text = widget.drill.description;
     }
 
     super.initState();
@@ -140,7 +143,7 @@ class _DrillDetailState extends State<DrillDetail> {
                             }
                             return null;
                           },
-                          controller: titleFieldController,
+                          controller: _titleFieldController,
                           cursorColor: Theme.of(context).colorScheme.onPrimary,
                           decoration: InputDecoration(
                             labelText: "Title",
@@ -153,7 +156,7 @@ class _DrillDetailState extends State<DrillDetail> {
                           ),
                         ),
                         TextFormField(
-                          controller: descriptionFieldController,
+                          controller: _descriptionFieldController,
                           cursorColor: Theme.of(context).colorScheme.onPrimary,
                           decoration: InputDecoration(
                             labelText: "Description",
@@ -167,81 +170,162 @@ class _DrillDetailState extends State<DrillDetail> {
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
-                        ListTile(
-                          leading: Text("Skill", style: Theme.of(context).textTheme.bodyText1),
-                          trailing: Text(_activity?.title ?? "Choose"),
-                          onTap: () {
-                            FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
-                              List<Activity> activities = [];
-                              if (snapshot.docs.length > 0) {
-                                snapshot.docs.forEach((doc) {
-                                  activities.add(Activity.fromSnapshot(doc));
-                                });
-
-                                setState(() {
-                                  _activities = activities;
-                                  _activity = activities[0];
-                                });
-
-                                SelectDialog.showModal<Activity>(
-                                  context,
-                                  label: "Choose a Skill",
-                                  items: _activities,
-                                  selectedValue: _activity,
-                                  itemBuilder: (BuildContext context, Activity activity, bool isSelected) {
-                                    return Container(
-                                      decoration: !isSelected
-                                          ? null
-                                          : BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5),
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                color: Theme.of(context).primaryColor,
-                                              ),
-                                            ),
-                                      child: ListTile(
-                                        selected: isSelected,
-                                        title: Text(activity.title ?? ""),
-                                      ),
-                                    );
-                                  },
-                                  onFind: (String filter) => _getActivities(filter),
-                                  onChange: (selected) {
-                                    setState(() {
-                                      _activity = selected;
-                                    });
-                                  },
-                                );
-                              }
-                            });
-                          },
-                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
+              ),
+              leading: Text("Sport", style: Theme.of(context).textTheme.bodyText1),
+              trailing: Text(
+                _activity.title.isNotEmpty ? _activity.title : "choose",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 14,
+                ),
+              ),
+              onTap: () {
+                FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) {
+                  List<Activity> activities = [];
+                  if (snapshot.docs.length > 0) {
+                    snapshot.docs.forEach((doc) {
+                      activities.add(Activity.fromSnapshot(doc));
+                    });
+
+                    setState(() {
+                      _activities = activities;
+                      _activity = _activity == null ? activities[0] : _activity;
+                    });
+
+                    SelectDialog.showModal<Activity>(
+                      context,
+                      label: "Choose Sport",
+                      items: _activities,
+                      showSearchBox: false,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      alwaysShowScrollBar: true,
+                      selectedValue: _activity,
+                      itemBuilder: (BuildContext context, Activity activity, bool isSelected) {
+                        return Container(
+                          decoration: !isSelected
+                              ? null
+                              : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                          child: ListTile(
+                            selected: isSelected,
+                            tileColor: Theme.of(context).colorScheme.primary,
+                            title: Text(
+                              activity.title ?? "",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          ),
+                        );
+                      },
+                      onChange: (selected) {
+                        setState(() {
+                          _activity = selected;
+                          _selectedCategories = [];
+                        });
+                      },
+                    );
+                  }
+                });
+              },
+            ),
+            _activity.categories.length < 1
+                ? Container()
+                : ListTile(
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    leading: Text("Skill", style: Theme.of(context).textTheme.bodyText1),
+                    trailing: Text(
+                      _selectedCategories.length > 0 ? _outputCategories() : "choose",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 14,
+                      ),
+                    ),
+                    onTap: () {
+                      SelectDialog.showModal<Category>(
+                        context,
+                        label: "Choose Skill(s)",
+                        items: _activity.categories,
+                        showSearchBox: false,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        alwaysShowScrollBar: true,
+                        multipleSelectedValues: _selectedCategories,
+                        itemBuilder: (BuildContext context, Category category, bool isSelected) {
+                          return Container(
+                            decoration: !isSelected
+                                ? null
+                                : BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                    border: Border.all(
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                            child: ListTile(
+                              selected: isSelected,
+                              tileColor: Theme.of(context).colorScheme.primary,
+                              title: Text(
+                                category.title ?? "",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              trailing: isSelected ? Icon(Icons.check) : null,
+                            ),
+                          );
+                        },
+                        onMultipleItemsChange: (List<Category> selected) {
+                          setState(() {
+                            _selectedCategories = selected;
+                          });
+                        },
+                        okButtonBuilder: (context, onPressed) {
+                          return Align(
+                            alignment: Alignment.centerRight,
+                            child: FloatingActionButton(
+                              onPressed: onPressed,
+                              child: Icon(Icons.check),
+                              mini: true,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ],
         ),
       ),
     );
   }
 
-  Future<List<Activity>> _getActivities(filter) async {
-    List<Activity> activities = [];
+  String _outputCategories() {
+    String catString = "";
 
-    await Future.forEach(_activities, (a) async {
-      activities.add(a);
+    _activity.categories.asMap().forEach((i, c) {
+      catString += (i + 1 != _activity.categories.length || _activity.categories?.length == 1) ? c.title + ", " : c.title;
     });
 
-    return activities;
+    return catString;
   }
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    titleFieldController.dispose();
+    _titleFieldController.dispose();
     super.dispose();
   }
 }
