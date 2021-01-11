@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/DrillType.dart';
+import 'package:skill_drills/models/firestore/Measurement.dart';
+import 'package:skill_drills/models/firestore/MeasurementTarget.dart';
+import 'package:skill_drills/models/firestore/MeasurementResult.dart';
 import 'package:skill_drills/models/firestore/SkillDrillsUser.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -10,6 +13,7 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 void bootstrap() {
   addUser();
   bootstrapActivities();
+  bootstrapDrillTypes();
 }
 
 /// Add user to users collection
@@ -188,22 +192,130 @@ void _saveActivityCategory(a, c) {
 
 /// Bootstrap the drill types with our predetermined drill types
 void bootstrapDrillTypes() {
-  FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) {
-    if (auth.currentUser.uid != null && !(snapshot.docs.length > 0)) {
-      // User doesn't have drill types
-      List<DrillType> drillTypes = [
-        DrillType("Reps", "Number of repetitions"),
-        DrillType("Score", "Number of successful attempts out of the set total"),
-        DrillType("Time elapsed", "How long the drill was performed"),
-        DrillType("Timer", "Countdown from the set duration"),
-        DrillType("Reps in time", "Number of repetitions in the set duration"),
-        DrillType("Score in time", "How many successful attempts out of x in the set duration"),
-        DrillType("Time elapsed vs. Target Time", "How long the drill was performed versus the set target time"),
-        DrillType("Time to perform reps", "How long it took to do the set number of reps"),
-        DrillType("Time to get score", "How long it took to get the set score"),
-        DrillType("Weighted reps", "Number of repetitions with the set weight"),
-        DrillType("Assisted reps", "Number of repetitions with the set assisted weight"),
-      ];
+  List<DrillType> drillTypes = [
+    DrillType("reps", "Reps", "Number of repetitions", null),
+    DrillType("score", "Score", "Number of successful attempts out of the set total", null),
+    DrillType("time_elapsed", "Time elapsed", "How long the drill was performed", null),
+    DrillType("timer", "Timer", "Countdown from the set duration", null),
+    DrillType("reps_in_time", "Reps in time", "Number of repetitions in the set duration", null),
+    DrillType("score_in_time", "Score in time", "How many successful attempts out of x in the set duration", null),
+    DrillType("time_elapsed_target_time", "Time elapsed vs. Target Time", "How long the drill was performed versus the set target time", null),
+    DrillType("reps_time", "Time to perform reps", "How long it took to do the set number of reps", null),
+    DrillType("score_time", "Time to get score", "How long it took to achieve the set score", null),
+    DrillType("weighted_reps", "Weighted reps", "Number of repetitions with the set weight", null),
+    DrillType("assisted_reps", "Assisted reps", "Number of repetitions with the set assisted weight", null),
+  ];
+
+  FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) async {
+    if (auth.currentUser.uid != null && snapshot.docs.length != drillTypes.length) {
+      // Drill types don't match - replace them
+      await Future.forEach(snapshot.docs, (doc) {
+        // Delete the activities categories first
+        doc.reference.collection('measurements').get().then((measurementSnapshots) {
+          measurementSnapshots.docs.forEach((mDoc) {
+            mDoc.reference.delete();
+          });
+        });
+
+        // Then delete the activity itself
+        doc.reference.delete();
+      });
+
+      drillTypes.forEach((dt) {
+        DocumentReference drillType = FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').doc();
+        drillType.set(dt.toMap());
+
+        List<Measurement> measurements = [];
+
+        switch (dt.id) {
+          case "reps":
+            measurements = [
+              MeasurementResult("amount", null),
+            ];
+
+            break;
+          case "score":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementTarget("amount", null, false),
+            ];
+
+            break;
+          case "time_elapsed":
+            measurements = [
+              MeasurementResult("duration", null),
+            ];
+
+            break;
+          case "timer":
+            measurements = [
+              MeasurementResult("duration", null),
+            ];
+
+            break;
+          case "reps_in_time":
+            measurements = [
+              MeasurementResult("amount", null),
+            ];
+
+            break;
+          case "score_in_time":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementTarget("amount", null, false),
+            ];
+
+            break;
+          case "time_elapsed_target_time":
+            measurements = [
+              MeasurementResult("duration", null),
+              MeasurementTarget("duration", null, false),
+            ];
+
+            break;
+          case "reps_time":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementResult("duration", null),
+            ];
+
+            break;
+          case "score_time":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementResult("duration", null),
+              MeasurementTarget("amount", null, false),
+            ];
+
+            break;
+          case "weighted_reps":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementResult("amount", null),
+            ];
+
+            break;
+          case "assisted_reps":
+            measurements = [
+              MeasurementResult("amount", null),
+              MeasurementResult("amount", null),
+            ];
+
+            break;
+          default:
+        }
+
+        measurements.forEach((m) {
+          _saveMeasurement(drillType, m);
+        });
+      });
     }
   });
+}
+
+/// Save individual category to activity categories collection
+void _saveMeasurement(dt, m) {
+  DocumentReference measurement = FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').doc(dt.id).collection('measurements').doc();
+  m.id = measurement.id;
+  measurement.set(m.toMap());
 }
