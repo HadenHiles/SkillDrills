@@ -6,15 +6,17 @@ import 'package:skill_drills/models/firestore/Measurement.dart';
 class MeasurementResult extends Measurement {
   String id;
   final String type;
+  final String label;
   final dynamic value;
   DocumentReference reference;
 
-  MeasurementResult(this.type, this.value) : super(type);
+  MeasurementResult(this.type, this.label, this.value) : super(type, label);
 
   MeasurementResult.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),
         id = map['id'],
         type = map['type'],
+        label = map['label'],
         value = map['value'],
         super.fromMap(map);
 

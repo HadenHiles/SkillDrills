@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
 import 'package:skill_drills/models/firestore/DrillType.dart';
+import 'package:skill_drills/models/firestore/Measurement.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -25,6 +27,8 @@ class _DrillDetailState extends State<DrillDetail> {
   final _titleFieldController = TextEditingController();
   final _descriptionFieldController = TextEditingController();
 
+  Drill _drill = Drill("", "", Activity("", null), null);
+
   List<Activity> _activities;
   Activity _activity = Activity("", null);
 
@@ -36,6 +40,7 @@ class _DrillDetailState extends State<DrillDetail> {
   @override
   void initState() {
     if (widget.drill != null) {
+      _drill = widget.drill;
       _titleFieldController.text = widget.drill.title;
       _descriptionFieldController.text = widget.drill.description;
     }
@@ -64,7 +69,11 @@ class _DrillDetailState extends State<DrillDetail> {
       List<DrillType> drillTypes = [];
       if (snapshot.docs.length > 0) {
         await Future.forEach(snapshot.docs, (doc) async {
-          drillTypes.add(DrillType.fromSnapshot(doc));
+          DrillType dt = DrillType.fromSnapshot(doc);
+          await _getMeasurements(doc.reference).then((measurements) {
+            dt.measurements = measurements;
+            drillTypes.add(dt);
+          });
         }).then((_) {
           setState(() {
             _drillTypes = drillTypes;
@@ -191,6 +200,11 @@ class _DrillDetailState extends State<DrillDetail> {
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              _drill = Drill(value, _drill.description, _drill.activity, _drill.drillType);
+                            });
+                          },
                         ),
                         TextFormField(
                           controller: _descriptionFieldController,
@@ -206,6 +220,11 @@ class _DrillDetailState extends State<DrillDetail> {
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              _drill = Drill(_drill.title, value, _drill.activity, _drill.drillType);
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -232,6 +251,16 @@ class _DrillDetailState extends State<DrillDetail> {
                         fontSize: 14,
                       ),
                     ),
+              onLongPress: () {
+                setState(() {
+                  _activity = Activity("", null);
+                  _selectedCategories = [];
+
+                  setState(() {
+                    _drill = Drill(_drill.title, _drill.description, Activity("", null), _drill.drillType);
+                  });
+                });
+              },
               onTap: _activities == null
                   ? null
                   : () {
@@ -278,6 +307,10 @@ class _DrillDetailState extends State<DrillDetail> {
                             setState(() {
                               _activity = selected;
                               _selectedCategories = [];
+
+                              setState(() {
+                                _drill = Drill(_drill.title, _drill.description, selected, _drill.drillType);
+                              });
                             });
                           });
                         },
@@ -299,6 +332,13 @@ class _DrillDetailState extends State<DrillDetail> {
                         fontSize: 14,
                       ),
                     ),
+                    onLongPress: () {
+                      setState(() {
+                        _activity.categories = [];
+                        _selectedCategories = [];
+                        _drill = Drill(_drill.title, _drill.description, _activity, _drill.drillType);
+                      });
+                    },
                     onTap: () {
                       SelectDialog.showModal<Category>(
                         context,
@@ -332,7 +372,9 @@ class _DrillDetailState extends State<DrillDetail> {
                         },
                         onMultipleItemsChange: (List<Category> selected) {
                           setState(() {
+                            _activity.categories = selected;
                             _selectedCategories = selected;
+                            _drill = Drill(_drill.title, _drill.description, _activity, _drill.drillType);
                           });
                         },
                         okButtonBuilder: (context, onPressed) {
@@ -367,6 +409,12 @@ class _DrillDetailState extends State<DrillDetail> {
                         fontSize: 14,
                       ),
                     ),
+              onLongPress: () {
+                setState(() {
+                  _drillType = null;
+                  _drill = Drill(_drill.title, _drill.description, _drill.activity, null);
+                });
+              },
               onTap: _drillTypes == null
                   ? null
                   : () {
@@ -413,11 +461,37 @@ class _DrillDetailState extends State<DrillDetail> {
                         onChange: (selected) async {
                           setState(() {
                             _drillType = selected;
+                            _drill = Drill(_drill.title, _drill.description, _drill.activity, selected);
                           });
                         },
                       );
                     },
             ),
+            _drillType == null
+                ? Container()
+                : Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 20,
+                    ),
+                    child: Column(
+                      children: [
+                        Divider(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Preview",
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          ],
+                        ),
+                        _buildPreview(_drill),
+                      ],
+                    ),
+                  ),
           ],
         ),
       ),
@@ -433,6 +507,15 @@ class _DrillDetailState extends State<DrillDetail> {
     }).then((_) => categories);
   }
 
+  Future<List<Measurement>> _getMeasurements(DocumentReference dtDoc) async {
+    List<Measurement> measurements = [];
+    return await dtDoc.collection('measurements').get().then((measurementSnapshot) async {
+      measurementSnapshot.docs.forEach((mDoc) {
+        measurements.add(Measurement.fromSnapshot(mDoc));
+      });
+    }).then((_) => measurements);
+  }
+
   String _outputCategories() {
     String catString = "";
 
@@ -441,6 +524,85 @@ class _DrillDetailState extends State<DrillDetail> {
     });
 
     return catString;
+  }
+
+  Widget _buildPreview(Drill drill) {
+    List<Widget> measurementFields = [];
+
+    drill.drillType.measurements.forEach((m) {
+      switch (m.type) {
+        case "amount":
+          measurementFields.add(
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  scrollPadding: EdgeInsets.all(5),
+                  decoration: InputDecoration(
+                    labelText: m.label,
+                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          break;
+        case "duration":
+          measurementFields.add(
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  scrollPadding: EdgeInsets.all(5),
+                  decoration: InputDecoration(
+                    labelText: m.label,
+                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  onTap: () async {
+                    // Use it as a dialog, passing in an optional initial time
+                    // and returning a promise that resolves to the duration
+                    // chosen when the dialog is accepted. Null when cancelled.
+                    Duration resultingDuration = await showDurationPicker(
+                      context: context,
+                      initialTime: new Duration(minutes: 1, seconds: 30),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+
+          break;
+        default:
+      }
+    });
+
+    Widget preview = Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              drill.title,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Text(
+              _outputCategories(),
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: measurementFields,
+        ),
+      ],
+    );
+
+    return preview;
   }
 
   @override

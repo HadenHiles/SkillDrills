@@ -38,6 +38,12 @@ class SkillDrillsTheme {
       headline3: TextStyle(
         color: Colors.black87,
       ),
+      headline4: TextStyle(
+        color: Colors.black87,
+      ),
+      headline5: TextStyle(
+        color: Colors.black87,
+      ),
       headline6: TextStyle(
         color: Color.fromRGBO(2, 164, 221, 1),
         fontSize: 14,
@@ -87,6 +93,12 @@ class SkillDrillsTheme {
         color: Colors.white,
       ),
       headline3: TextStyle(
+        color: Color.fromRGBO(255, 255, 255, 0.8),
+      ),
+      headline4: TextStyle(
+        color: Color.fromRGBO(255, 255, 255, 0.8),
+      ),
+      headline5: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
       ),
       headline6: TextStyle(
