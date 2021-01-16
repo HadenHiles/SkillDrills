@@ -6,6 +6,7 @@ import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
+import 'package:skill_drills/models/firestore/DrillType.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -29,6 +30,9 @@ class _DrillDetailState extends State<DrillDetail> {
 
   List<Category> _selectedCategories = [];
 
+  List<DrillType> _drillTypes;
+  DrillType _drillType;
+
   @override
   void initState() {
     if (widget.drill != null) {
@@ -50,6 +54,20 @@ class _DrillDetailState extends State<DrillDetail> {
           setState(() {
             _activities = activities;
             _activity = _activity == null ? activities[0] : _activity;
+          });
+        });
+      }
+    });
+
+    // Load the drill types
+    FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) async {
+      List<DrillType> drillTypes = [];
+      if (snapshot.docs.length > 0) {
+        await Future.forEach(snapshot.docs, (doc) async {
+          drillTypes.add(DrillType.fromSnapshot(doc));
+        }).then((_) {
+          setState(() {
+            _drillTypes = drillTypes;
           });
         });
       }
@@ -273,7 +291,7 @@ class _DrillDetailState extends State<DrillDetail> {
                       vertical: 10,
                       horizontal: 20,
                     ),
-                    leading: Text("Skill", style: Theme.of(context).textTheme.bodyText1),
+                    leading: Text(_selectedCategories.length <= 1 ? "Skill" : "Skills", style: Theme.of(context).textTheme.bodyText1),
                     trailing: Text(
                       _selectedCategories.length > 0 ? _outputCategories() : "choose",
                       style: TextStyle(
@@ -330,6 +348,76 @@ class _DrillDetailState extends State<DrillDetail> {
                       );
                     },
                   ),
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
+              ),
+              leading: Text("Type", style: Theme.of(context).textTheme.bodyText1),
+              trailing: _drillTypes == null
+                  ? Container(
+                      height: 25,
+                      width: 25,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(
+                      _drillType != null ? _drillType.title : "choose",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 14,
+                      ),
+                    ),
+              onTap: _drillTypes == null
+                  ? null
+                  : () {
+                      SelectDialog.showModal<DrillType>(
+                        context,
+                        label: "Choose Type",
+                        items: _drillTypes,
+                        showSearchBox: false,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        alwaysShowScrollBar: true,
+                        selectedValue: _drillType,
+                        itemBuilder: (BuildContext context, DrillType drillType, bool isSelected) {
+                          return Container(
+                            decoration: !isSelected
+                                ? null
+                                : BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                    border: Border.all(
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                            child: ListTile(
+                              selected: isSelected,
+                              tileColor: Theme.of(context).colorScheme.primary,
+                              title: Text(
+                                drillType.title ?? "",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              subtitle: Text(
+                                drillType.descriptor,
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ),
+                          );
+                        },
+                        emptyBuilder: (context) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [CircularProgressIndicator()],
+                          );
+                        },
+                        onChange: (selected) async {
+                          setState(() {
+                            _drillType = selected;
+                          });
+                        },
+                      );
+                    },
+            ),
           ],
         ),
       ),

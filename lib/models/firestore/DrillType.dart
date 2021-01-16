@@ -15,7 +15,6 @@ class DrillType {
       : assert(map['id'] != null),
         assert(map['title'] != null),
         assert(map['descriptor'] != null),
-        assert(map['measurements'] != null),
         id = map['id'],
         title = map['title'],
         descriptor = map['descriptor'],
@@ -24,10 +23,21 @@ class DrillType {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
       'descriptor': descriptor,
     };
   }
 
   DrillType.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data(), reference: snapshot.reference);
+
+  // For select dialogs
+  @override
+  String toString() => title;
+
+  @override
+  operator ==(dt) => dt is DrillType && dt.id == id;
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode;
 }
