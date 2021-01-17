@@ -7,16 +7,18 @@ class MeasurementResult extends Measurement {
   String id;
   final String type;
   final String label;
+  final int order;
   final dynamic value;
   DocumentReference reference;
 
-  MeasurementResult(this.type, this.label, this.value) : super(type, label);
+  MeasurementResult(this.type, this.label, this.order, this.value) : super(type, label, order);
 
   MeasurementResult.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),
         id = map['id'],
         type = map['type'],
         label = map['label'],
+        order = map['order'],
         value = map['value'],
         super.fromMap(map);
 

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expandable/expandable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_duration_picker/flutter_duration_picker.dart';
+import 'package:flutter_picker/Picker.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/firestore/Activity.dart';
@@ -10,6 +11,7 @@ import 'package:skill_drills/models/firestore/Drill.dart';
 import 'package:skill_drills/models/firestore/DrillType.dart';
 import 'package:skill_drills/models/firestore/Measurement.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
+import 'package:skill_drills/services/utility.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -470,25 +472,37 @@ class _DrillDetailState extends State<DrillDetail> {
             _drillType == null
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: 20,
-                    ),
                     child: Column(
                       children: [
                         Divider(
+                          height: 60,
                           color: Theme.of(context).colorScheme.primaryVariant,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Preview",
-                              style: Theme.of(context).textTheme.bodyText2,
+                        ExpandablePanel(
+                          header: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                            child: Text(
+                              "How will it look?",
+                              style: Theme.of(context).textTheme.headline5,
                             ),
-                          ],
+                          ),
+                          collapsed: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                            child: Text(
+                              "See how your drill will look when you use it in a session.",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          theme: ExpandableThemeData(
+                            tapBodyToExpand: true,
+                            iconColor: Theme.of(context).colorScheme.onPrimary,
+                            iconPlacement: ExpandablePanelIconPlacement.right,
+                          ),
+                          expanded: _buildPreview(_drill),
                         ),
-                        _buildPreview(_drill),
                       ],
                     ),
                   ),
@@ -509,7 +523,7 @@ class _DrillDetailState extends State<DrillDetail> {
 
   Future<List<Measurement>> _getMeasurements(DocumentReference dtDoc) async {
     List<Measurement> measurements = [];
-    return await dtDoc.collection('measurements').get().then((measurementSnapshot) async {
+    return await dtDoc.collection('measurements').orderBy('order').get().then((measurementSnapshot) async {
       measurementSnapshot.docs.forEach((mDoc) {
         measurements.add(Measurement.fromSnapshot(mDoc));
       });
@@ -527,9 +541,12 @@ class _DrillDetailState extends State<DrillDetail> {
   }
 
   Widget _buildPreview(Drill drill) {
+    Map<int, TextEditingController> measurementTextControllers = {};
     List<Widget> measurementFields = [];
 
-    drill.drillType.measurements.forEach((m) {
+    drill.drillType.measurements.asMap().forEach((i, m) {
+      measurementTextControllers.putIfAbsent(i, () => TextEditingController());
+
       switch (m.type) {
         case "amount":
           measurementFields.add(
@@ -537,11 +554,15 @@ class _DrillDetailState extends State<DrillDetail> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: TextField(
+                  controller: measurementTextControllers[i],
                   keyboardType: TextInputType.number,
                   scrollPadding: EdgeInsets.all(5),
+                  style: Theme.of(context).textTheme.bodyText1,
                   decoration: InputDecoration(
                     labelText: m.label,
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                    labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -555,20 +576,49 @@ class _DrillDetailState extends State<DrillDetail> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: TextField(
+                  controller: measurementTextControllers[i],
                   keyboardType: TextInputType.number,
                   scrollPadding: EdgeInsets.all(5),
+                  style: Theme.of(context).textTheme.bodyText1,
                   decoration: InputDecoration(
                     labelText: m.label,
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                    labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    hintStyle: Theme.of(context).textTheme.bodyText1,
                   ),
-                  onTap: () async {
-                    // Use it as a dialog, passing in an optional initial time
-                    // and returning a promise that resolves to the duration
-                    // chosen when the dialog is accepted. Null when cancelled.
-                    Duration resultingDuration = await showDurationPicker(
-                      context: context,
-                      initialTime: new Duration(minutes: 1, seconds: 30),
-                    );
+                  onTap: () {
+                    Picker(
+                      adapter: NumberPickerAdapter(data: <NumberPickerColumn>[
+                        const NumberPickerColumn(begin: 0, end: 24, suffix: Text(' hrs'), jump: 1),
+                        const NumberPickerColumn(begin: 0, end: 60, suffix: Text(' mins'), jump: 1),
+                        const NumberPickerColumn(begin: 0, end: 60, suffix: Text(' secs'), jump: 5),
+                      ]),
+                      delimiter: <PickerDelimiter>[
+                        PickerDelimiter(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Icon(Icons.more_vert),
+                          ),
+                        )
+                      ],
+                      hideHeader: true,
+                      confirmText: 'Ok',
+                      confirmTextStyle: TextStyle(
+                        inherit: false,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      title: const Text('Select duration'),
+                      selectedTextStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onConfirm: (Picker picker, List<int> value) {
+                        // You get your duration here
+                        Duration _duration = Duration(hours: picker.getSelectedValues()[0], minutes: picker.getSelectedValues()[1], seconds: picker.getSelectedValues()[2]);
+
+                        measurementTextControllers[i].text = printDuration(_duration);
+                      },
+                    ).showDialog(context);
                   },
                 ),
               ),
@@ -580,26 +630,29 @@ class _DrillDetailState extends State<DrillDetail> {
       }
     });
 
-    Widget preview = Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              drill.title,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            Text(
-              _outputCategories(),
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: measurementFields,
-        ),
-      ],
+    Widget preview = Container(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                drill.title.isNotEmpty ? drill.title : "(No Title)",
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              Text(
+                _outputCategories(),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: measurementFields,
+          ),
+        ],
+      ),
     );
 
     return preview;

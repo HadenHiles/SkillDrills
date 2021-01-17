@@ -230,75 +230,75 @@ void bootstrapDrillTypes() {
         switch (dt.id) {
           case "reps":
             measurements = [
-              MeasurementResult("amount", "Reps", null),
+              MeasurementResult("amount", "Reps", 1, null),
             ];
 
             break;
           case "score":
             measurements = [
-              MeasurementResult("amount", "Score", null),
-              MeasurementTarget("amount", "Target", null, false),
+              MeasurementResult("amount", "Score", 1, null),
+              MeasurementTarget("amount", "Target", 2, null, false),
             ];
 
             break;
           case "time_elapsed":
             measurements = [
-              MeasurementResult("duration", "Time", null),
+              MeasurementResult("duration", "Time", 1, null),
             ];
 
             break;
           case "timer":
             measurements = [
-              MeasurementResult("duration", "Timer", null),
+              MeasurementResult("duration", "Timer", 1, null),
             ];
 
             break;
           case "reps_in_time":
             measurements = [
-              MeasurementResult("amount", "Reps", null),
+              MeasurementResult("amount", "Reps", 1, null),
             ];
 
             break;
           case "score_in_time":
             measurements = [
-              MeasurementResult("amount", "Score", null),
-              MeasurementTarget("amount", "Target", null, false),
+              MeasurementResult("amount", "Score", 1, null),
+              MeasurementTarget("amount", "Target", 2, null, false),
             ];
 
             break;
           case "time_elapsed_target_time":
             measurements = [
-              MeasurementResult("duration", "Time", null),
-              MeasurementTarget("duration", "Target Time", null, false),
+              MeasurementResult("duration", "Time", 1, null),
+              MeasurementTarget("duration", "Target Time", 2, null, false),
             ];
 
             break;
           case "reps_time":
             measurements = [
-              MeasurementResult("amount", "Reps", null),
-              MeasurementResult("duration", "Time", null),
+              MeasurementResult("amount", "Reps", 1, null),
+              MeasurementResult("duration", "Time", 2, null),
             ];
 
             break;
           case "score_time":
             measurements = [
-              MeasurementResult("amount", "Score", null),
-              MeasurementResult("duration", "Time", null),
-              MeasurementTarget("amount", "Target", null, false),
+              MeasurementResult("amount", "Score", 1, null),
+              MeasurementResult("duration", "Time", 2, null),
+              MeasurementTarget("amount", "Target", 3, null, false),
             ];
 
             break;
           case "weighted_reps":
             measurements = [
-              MeasurementResult("amount", "Weight", null),
-              MeasurementResult("amount", "Reps", null),
+              MeasurementResult("amount", "Weight", 1, null),
+              MeasurementResult("amount", "Reps", 2, null),
             ];
 
             break;
           case "assisted_reps":
             measurements = [
-              MeasurementResult("amount", "Assisted", null),
-              MeasurementResult("amount", "Reps", null),
+              MeasurementResult("amount", "Assisted", 1, null),
+              MeasurementResult("amount", "Reps", 2, null),
             ];
 
             break;

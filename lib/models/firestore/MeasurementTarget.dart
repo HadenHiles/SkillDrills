@@ -8,17 +8,19 @@ class MeasurementTarget extends Measurement {
   String id;
   final String type;
   final String label;
+  final int order;
   final dynamic target;
   final bool reverse;
   DocumentReference reference;
 
-  MeasurementTarget(this.type, this.label, this.target, this.reverse) : super(type, label);
+  MeasurementTarget(this.type, this.label, this.order, this.target, this.reverse) : super(type, label, order);
 
   MeasurementTarget.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),
         id = map['id'],
         type = map['type'],
         label = map['label'],
+        order = map['order'],
         target = map['target'],
         reverse = map['reverse'] ?? false,
         super.fromMap(map);
