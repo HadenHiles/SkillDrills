@@ -166,26 +166,30 @@ class _DrillDetailState extends State<DrillDetail> {
 
                       if (!hasErrors && widget.drill != null) {
                         if (_formKey.currentState.validate()) {
-                          // FirebaseFirestore.instance.runTransaction((transaction) async {
-                          //   transaction.update(
-                          //     widget.drill.reference,
-                          //     Drill(
-                          //       titleFieldController.text.toString().trim(),
-                          //       _categories,
-                          //       user.uid ?? null,
-                          //     ).toMap(),
-                          //   );
-                          // });
+                          FirebaseFirestore.instance.runTransaction((transaction) async {
+                            transaction.update(
+                              widget.drill.reference,
+                              Drill(
+                                _titleFieldController.text.toString().trim(),
+                                _descriptionFieldController.text.toString().trim(),
+                                _activity,
+                                _drillType,
+                              ).toMap(),
+                            );
 
-                          navigatorKey.currentState.pop();
+                            navigatorKey.currentState.pop();
+                          });
                         }
                       } else if (!hasErrors) {
                         if (_formKey.currentState.validate()) {
-                          // FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').add(
-                          //       Drill(
-                          //         titleFieldController.text.toString().trim(),
-                          //       ).toMap(),
-                          //     );
+                          FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').add(
+                                Drill(
+                                  _titleFieldController.text.toString().trim(),
+                                  _descriptionFieldController.text.toString().trim(),
+                                  _activity,
+                                  _drillType,
+                                ).toMap(),
+                              );
 
                           navigatorKey.currentState.pop();
                         }
