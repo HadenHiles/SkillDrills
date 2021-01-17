@@ -193,17 +193,17 @@ void _saveActivityCategory(a, c) {
 /// Bootstrap the drill types with our predetermined drill types
 void bootstrapDrillTypes() {
   List<DrillType> drillTypes = [
-    DrillType("reps", "Reps", "Number of repetitions", null),
-    DrillType("score", "Score", "Number of successful attempts out of the set total", null),
-    DrillType("time_elapsed", "Time elapsed", "How long the drill was performed", null),
-    DrillType("timer", "Timer", "Countdown from the set duration", null),
-    DrillType("reps_in_time", "Reps in time", "Number of repetitions in the set duration", null),
-    DrillType("score_in_time", "Score in time", "How many successful attempts out of x in the set duration", null),
-    DrillType("time_elapsed_target_time", "Time elapsed vs. Target Time", "How long the drill was performed versus the set target time", null),
-    DrillType("reps_time", "Time to perform reps", "How long it took to do the set number of reps", null),
-    DrillType("score_time", "Time to get score", "How long it took to achieve the set score", null),
-    DrillType("weighted_reps", "Weighted reps", "Number of repetitions with the set weight", null),
-    DrillType("assisted_reps", "Assisted reps", "Number of repetitions with the set assisted weight", null),
+    DrillType("reps", "Reps", "Number of repetitions", null, 1),
+    DrillType("score", "Score", "Number of successful attempts out of a target score", null, 2),
+    DrillType("time_elapsed", "Time elapsed", "How long a drill was performed", null, 3),
+    DrillType("timer", "Timer", "Countdown from a set duration", Duration(minutes: 1).inSeconds, 4),
+    DrillType("reps_in_time", "Reps in duration", "Number of repetitions in a set duration", Duration(minutes: 1).inSeconds, 5),
+    DrillType("score_in_time", "Score in duration", "How many successful attempts out of target in a set duration", Duration(minutes: 1).inSeconds, 6),
+    DrillType("time_elapsed_target_time", "Time elapsed vs. Target Time", "How long the drill was performed versus a target time", null, 7),
+    DrillType("reps_time", "Time to perform reps", "How long it took to do a set number of reps", null, 8),
+    DrillType("score_time", "Time to get score", "How long it took to achieve a target score", null, 9),
+    DrillType("weighted_reps", "Weighted reps", "Number of repetitions with a set weight", null, 10),
+    DrillType("assisted_reps", "Assisted reps", "Number of repetitions with a set assisted weight", null, 11),
   ];
 
   FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) async {
@@ -230,75 +230,75 @@ void bootstrapDrillTypes() {
         switch (dt.id) {
           case "reps":
             measurements = [
-              MeasurementResult("amount", "Reps", 1, null),
+              MeasurementResult("result", "amount", "Reps", 1, null),
             ];
 
             break;
           case "score":
             measurements = [
-              MeasurementResult("amount", "Score", 1, null),
-              MeasurementTarget("amount", "Target", 2, null, false),
+              MeasurementResult("result", "amount", "Score", 1, null),
+              MeasurementTarget("target", "amount", "Target Score", 2, null, false),
             ];
 
             break;
           case "time_elapsed":
             measurements = [
-              MeasurementResult("duration", "Time", 1, null),
+              MeasurementResult("result", "duration", "Time", 1, null),
             ];
 
             break;
           case "timer":
             measurements = [
-              MeasurementResult("duration", "Timer", 1, null),
+              MeasurementResult("result", "duration", "Timer", 1, null),
             ];
 
             break;
           case "reps_in_time":
             measurements = [
-              MeasurementResult("amount", "Reps", 1, null),
+              MeasurementResult("result", "amount", "Reps", 1, null),
             ];
 
             break;
           case "score_in_time":
             measurements = [
-              MeasurementResult("amount", "Score", 1, null),
-              MeasurementTarget("amount", "Target", 2, null, false),
+              MeasurementResult("result", "amount", "Score", 1, null),
+              MeasurementTarget("target", "amount", "Target Score", 2, null, false),
             ];
 
             break;
           case "time_elapsed_target_time":
             measurements = [
-              MeasurementResult("duration", "Time", 1, null),
-              MeasurementTarget("duration", "Target Time", 2, null, false),
+              MeasurementResult("result", "duration", "Time", 1, null),
+              MeasurementTarget("target", "duration", "Target Time", 2, null, false),
             ];
 
             break;
           case "reps_time":
             measurements = [
-              MeasurementResult("amount", "Reps", 1, null),
-              MeasurementResult("duration", "Time", 2, null),
+              MeasurementResult("result", "amount", "Reps", 1, null),
+              MeasurementResult("result", "duration", "Time", 2, null),
             ];
 
             break;
           case "score_time":
             measurements = [
-              MeasurementResult("amount", "Score", 1, null),
-              MeasurementResult("duration", "Time", 2, null),
-              MeasurementTarget("amount", "Target", 3, null, false),
+              MeasurementResult("result", "amount", "Score", 1, null),
+              MeasurementResult("result", "duration", "Time", 2, null),
+              MeasurementTarget("target", "amount", "Target Score", 3, null, false),
             ];
 
             break;
           case "weighted_reps":
             measurements = [
-              MeasurementResult("amount", "Weight", 1, null),
-              MeasurementResult("amount", "Reps", 2, null),
+              MeasurementResult("result", "amount", "Weight", 1, null),
+              MeasurementResult("result", "amount", "Reps", 2, null),
             ];
 
             break;
           case "assisted_reps":
             measurements = [
-              MeasurementResult("amount", "Assisted", 1, null),
-              MeasurementResult("amount", "Reps", 2, null),
+              MeasurementResult("result", "amount", "Assisted", 1, null),
+              MeasurementResult("result", "amount", "Reps", 2, null),
             ];
 
             break;

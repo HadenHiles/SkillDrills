@@ -5,11 +5,12 @@ class DrillType {
   final String id; // Ensure unique
   final String title;
   final String descriptor;
-  final Duration timeLimit;
+  final int order;
+  final int timerInSeconds;
   List<Measurement> measurements;
   DocumentReference reference;
 
-  DrillType(this.id, this.title, this.descriptor, this.timeLimit);
+  DrillType(this.id, this.title, this.descriptor, this.timerInSeconds, this.order);
 
   DrillType.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['id'] != null),
@@ -19,13 +20,16 @@ class DrillType {
         title = map['title'],
         descriptor = map['descriptor'],
         measurements = map['measurements'],
-        timeLimit = map['time_limit'];
+        timerInSeconds = map['timer_in_seconds'],
+        order = map['order'];
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
       'descriptor': descriptor,
+      'timer_in_seconds': timerInSeconds,
+      'order': order,
     };
   }
 

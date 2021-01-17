@@ -55,11 +55,16 @@ class _DrillItemState extends State<DrillItem> {
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   onPressed: () {
-                    confirmDialog(
+                    dialog(
                         context,
                         SkillDrillsDialog(
                           "Delete \"${widget.drill.title}\"?",
-                          "Are you sure you want to delete this drill?\n\nThis action cannot be undone.",
+                          Text(
+                            "Are you sure you want to delete this drill?\n\nThis action cannot be undone.",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
                           null,
                           () {
                             Navigator.of(context).pop();

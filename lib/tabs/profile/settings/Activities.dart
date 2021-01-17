@@ -166,11 +166,16 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   ),
                 ),
                 onPressed: () {
-                  confirmDialog(
+                  dialog(
                       context,
                       SkillDrillsDialog(
                         "Reset Activities?",
-                        "Are you sure you want to reset your activities?\n\nThis can't be undone.",
+                        Text(
+                          "Are you sure you want to reset your activities?\n\nThis can't be undone.",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                        ),
                         "Cancel",
                         () {
                           Navigator.of(context).pop();
