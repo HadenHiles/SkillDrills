@@ -666,28 +666,36 @@ class _DrillDetailState extends State<DrillDetail> {
                       horizontal: 20,
                     ),
                     tileColor: Theme.of(context).colorScheme.primary,
-                    title: Text(
-                      "Preview",
-                      style: Theme.of(context).textTheme.bodyText1,
+                    title: Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            child: _drill.title.isNotEmpty
+                                ? Text(
+                                    "Preview of \"${_drill.title}\"",
+                                    style: Theme.of(context).textTheme.headline6,
+                                  )
+                                : Text(
+                                    "Preview of \"(No Title)\"",
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
+                          ),
+                          Text(_drill.drillType.descriptor, style: Theme.of(context).textTheme.bodyText2),
+                        ],
+                      ),
                     ),
                     trailing: InkWell(
                       child: Icon(
                         Icons.keyboard_arrow_up,
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
+                      onTap: _showPreview,
                     ),
-                    onTap: () {
-                      setState(() {
-                        _preview = _buildPreview(_drill);
-                      });
-                      showModalBottomSheet<void>(
-                        context: context,
-                        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-                        builder: (BuildContext context) {
-                          return _preview;
-                        },
-                      );
-                    },
+                    onTap: _showPreview,
                   ),
           ],
         ),
@@ -849,6 +857,19 @@ class _DrillDetailState extends State<DrillDetail> {
     return defaultTargetFields;
   }
 
+  void _showPreview() {
+    setState(() {
+      _preview = _buildPreview(_drill);
+    });
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+      builder: (BuildContext context) {
+        return _preview;
+      },
+    );
+  }
+
   Widget _buildPreview(Drill drill) {
     Map<int, TextEditingController> measurementTextControllers = {};
     List<Widget> measurementFields = [];
@@ -937,44 +958,88 @@ class _DrillDetailState extends State<DrillDetail> {
 
     String drillTitle = drill.title.isNotEmpty ? drill.title : "(No Title)";
 
-    Widget preview = AbsorbPointer(
-      child: Container(
-        height: 200,
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 5),
-                  child: Text("Preview of \"$drillTitle\"", style: Theme.of(context).textTheme.headline6),
-                ),
-                Text(drill.drillType.descriptor, style: Theme.of(context).textTheme.bodyText2),
-              ],
+    Widget preview = GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: AbsorbPointer(
+        child: Container(
+          height: 200,
+          child: Card(
+            color: Theme.of(context).colorScheme.primary,
+            elevation: 1,
+            margin: EdgeInsets.all(0),
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: Text("Preview of \"$drillTitle\"", style: Theme.of(context).textTheme.headline6),
+                              ),
+                              Text(drill.drillType.descriptor, style: Theme.of(context).textTheme.bodyText2),
+                            ],
+                          ),
+                          InkWell(
+                            child: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 40,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              drillTitle,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Text(
+                              _outputCategories(),
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: measurementFields,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Divider(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  drillTitle,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                Text(
-                  _outputCategories(),
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: measurementFields,
-            ),
-          ],
+          ),
         ),
       ),
     );
