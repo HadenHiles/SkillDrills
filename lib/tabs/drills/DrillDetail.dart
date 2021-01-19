@@ -49,13 +49,7 @@ class _DrillDetailState extends State<DrillDetail> {
 
   @override
   void initState() {
-    if (widget.drill != null) {
-      _drill = widget.drill;
-      _titleFieldController.text = widget.drill.title;
-      _descriptionFieldController.text = widget.drill.description;
-    }
-
-    // Load the activities
+    // Load the activities first
     FirebaseFirestore.instance.collection('activities').doc(auth.currentUser.uid).collection('activities').get().then((snapshot) async {
       List<Activity> activities = [];
       if (snapshot.docs.length > 0) {
@@ -63,6 +57,13 @@ class _DrillDetailState extends State<DrillDetail> {
           Activity a = Activity.fromSnapshot(doc);
           await _getCategories(doc.reference).then((categories) {
             a.categories = categories;
+
+            if (a == widget.drill.activity) {
+              setState(() {
+                _activity.categories = a.categories;
+              });
+            }
+
             activities.add(a);
           });
         }).then((_) {
@@ -73,6 +74,36 @@ class _DrillDetailState extends State<DrillDetail> {
         });
       }
     });
+
+    // If the user is editing a drill
+    if (widget.drill != null) {
+      setState(() {
+        _drill = widget.drill;
+        _titleFieldController.text = widget.drill.title;
+        _descriptionFieldController.text = widget.drill.description;
+        _activity = widget.drill.activity;
+        _selectedCategories = widget.drill.categories;
+        _drillType = widget.drill.drillType;
+        _timerTextController.text = printDuration(Duration(seconds: widget.drill.drillType.timerInSeconds));
+      });
+
+      // Load the drill measurements
+      FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').orderBy('order').get().then((snapshot) async {
+        List<Measurement> measures = [];
+        if (snapshot.docs.length > 0) {
+          snapshot.docs.forEach((doc) {
+            measures.add(Measurement.fromSnapshot(doc));
+          });
+
+          setState(() {
+            _drill.measurements = measures;
+            _drillType.measurements = measures;
+            _preview = _buildPreview(_drill);
+            _targetFields = _buildDefaultTargetFields(_drill);
+          });
+        }
+      });
+    }
 
     // Load the drill types
     FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').orderBy('order').get().then((snapshot) async {
@@ -167,6 +198,26 @@ class _DrillDetailState extends State<DrillDetail> {
 
                       if (!hasErrors && widget.drill != null) {
                         if (_formKey.currentState.validate()) {
+                          _drillType.measurements.forEach((m) {
+                            FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').get().then((snapshot) {
+                              snapshot.docs.forEach((doc) {
+                                doc.reference.delete();
+                              });
+
+                              FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').doc().set(m.toMap());
+                            });
+                          });
+
+                          _selectedCategories.forEach((c) {
+                            FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').get().then((snapshot) {
+                              snapshot.docs.forEach((doc) {
+                                doc.reference.delete();
+                              });
+
+                              FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').doc().set(c.toMap());
+                            });
+                          });
+
                           FirebaseFirestore.instance.runTransaction((transaction) async {
                             transaction.update(
                               widget.drill.reference,
@@ -183,14 +234,34 @@ class _DrillDetailState extends State<DrillDetail> {
                         }
                       } else if (!hasErrors) {
                         if (_formKey.currentState.validate()) {
-                          FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').add(
-                                Drill(
-                                  _titleFieldController.text.toString().trim(),
-                                  _descriptionFieldController.text.toString().trim(),
-                                  _activity,
-                                  _drillType,
-                                ).toMap(),
-                              );
+                          DocumentReference newDoc = FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc();
+
+                          Drill newDrill = Drill(
+                            _titleFieldController.text.toString().trim(),
+                            _descriptionFieldController.text.toString().trim(),
+                            _activity,
+                            _drillType,
+                          );
+
+                          newDrill.measurements = _drillType.measurements;
+                          newDrill.activity.categories = _selectedCategories;
+
+                          newDoc.set(newDrill.toMap());
+
+                          _drillType.measurements.forEach((m) {
+                            if (m.value is Duration) {
+                              m.value = (m.value as Duration).inSeconds;
+                            }
+                            if (m.target is Duration) {
+                              m.target = (m.target as Duration).inSeconds;
+                            }
+
+                            newDoc.collection('measurements').doc().set(m.toMap());
+                          });
+
+                          _selectedCategories.forEach((c) {
+                            newDoc.collection('categories').doc().set(c.toMap());
+                          });
 
                           navigatorKey.currentState.pop();
                         }
@@ -359,7 +430,7 @@ class _DrillDetailState extends State<DrillDetail> {
                           );
                         },
                 ),
-                (_activity.categories?.length ?? 0) < 1
+                (_selectedCategories?.length ?? 0) < 1
                     ? Container()
                     : ListTile(
                         contentPadding: EdgeInsets.symmetric(
@@ -506,12 +577,16 @@ class _DrillDetailState extends State<DrillDetail> {
                               );
                             },
                             onChange: (selected) async {
+                              Drill d = Drill(_titleFieldController.text, _descriptionFieldController.text, _activity, selected);
+
                               setState(() {
                                 _drillTypeError = false;
                                 _drillType = selected;
-                                _drill = Drill(_drill.title, _drill.description, _drill.activity, selected);
-                                _preview = _buildPreview(_drill);
-                                _targetFields = _buildDefaultTargetFields();
+                                d.measurements = _drillType.measurements;
+                                d.categories = _selectedCategories;
+                                _drill = d;
+                                _preview = _buildPreview(d);
+                                _targetFields = _buildDefaultTargetFields(d);
                               });
                             },
                           );
@@ -646,10 +721,10 @@ class _DrillDetailState extends State<DrillDetail> {
     return catString;
   }
 
-  Widget _buildDefaultTargetFields() {
+  Widget _buildDefaultTargetFields(Drill drill) {
     Map<int, TextEditingController> targetTextControllers = {};
     List<Widget> targetFields = [];
-    List<Measurement> targets = _drillType.measurements.where((m) => (m).type == "target").toList();
+    List<Measurement> targets = drill.measurements.where((m) => (m).type == "target").toList();
 
     targets.asMap().forEach((i, t) {
       targetTextControllers.putIfAbsent(i, () => TextEditingController());
@@ -750,6 +825,14 @@ class _DrillDetailState extends State<DrillDetail> {
           break;
         default:
       }
+
+      if (t.type == "target" && t.target != null) {
+        if (t.metric == "duration") {
+          targetTextControllers[i].text = printDuration(Duration(seconds: t.target));
+        } else {
+          targetTextControllers[i].text = t.target.toString();
+        }
+      }
     });
 
     Widget defaultTargetFields = Column(
@@ -768,7 +851,7 @@ class _DrillDetailState extends State<DrillDetail> {
     Map<int, TextEditingController> measurementTextControllers = {};
     List<Widget> measurementFields = [];
 
-    drill.drillType.measurements.asMap().forEach((i, m) {
+    drill.drillType?.measurements?.asMap()?.forEach((i, m) {
       measurementTextControllers.putIfAbsent(i, () => TextEditingController());
 
       switch (m.metric) {

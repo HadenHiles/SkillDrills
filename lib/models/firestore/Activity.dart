@@ -14,13 +14,18 @@ class Activity {
       : assert(map['title'] != null),
         id = map['id'],
         title = map['title'],
-        categories = map['categories'],
         createdBy = map['created_by'];
 
   Map<String, dynamic> toMap() {
+    List<Map<String, dynamic>> cats = [];
+    categories?.forEach((c) {
+      cats.add(c.toMap());
+    });
+
     return {
       'id': id,
       'title': title,
+      'categories': cats,
       'created_by': createdBy,
     };
   }

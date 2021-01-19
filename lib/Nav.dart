@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_drills/main.dart';
+import 'package:skill_drills/tabs/Drills.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
@@ -76,6 +77,7 @@ class _NavState extends State<Nav> {
           ),
         ),
       ],
+      body: Drills(),
     ),
     NavTab(
       title: BasicTitle(title: "Routines"),

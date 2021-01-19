@@ -19,7 +19,6 @@ class DrillType {
         id = map['id'],
         title = map['title'],
         descriptor = map['descriptor'],
-        measurements = map['measurements'],
         timerInSeconds = map['timer_in_seconds'],
         order = map['order'];
 

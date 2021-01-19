@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
+import 'package:skill_drills/models/firestore/Measurement.dart';
 import 'Activity.dart';
 import 'DrillType.dart';
 
@@ -7,6 +9,8 @@ class Drill {
   final String description;
   final Activity activity;
   final DrillType drillType;
+  List<Measurement> measurements;
+  List<Category> categories;
   DocumentReference reference;
 
   Drill(this.title, this.description, this.activity, this.drillType);
@@ -15,12 +19,11 @@ class Drill {
       : assert(map['title'] != null),
         assert(map['description'] != null),
         assert(map['activity'] != null),
-        assert(map['category'] != null),
         assert(map['drill_type'] != null),
         title = map['title'],
         description = map['description'],
-        activity = map['activity'],
-        drillType = map['drill_type'];
+        activity = Activity.fromMap(map['activity']),
+        drillType = DrillType.fromMap(map['drill_type']);
 
   Map<String, dynamic> toMap() {
     return {
