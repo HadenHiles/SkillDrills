@@ -58,10 +58,12 @@ class _DrillDetailState extends State<DrillDetail> {
           await _getCategories(doc.reference).then((categories) {
             a.categories = categories;
 
-            if (a == widget.drill.activity) {
-              setState(() {
-                _activity.categories = a.categories;
-              });
+            if (widget.drill != null) {
+              if (a == widget.drill.activity) {
+                setState(() {
+                  _activity.categories = a.categories;
+                });
+              }
             }
 
             activities.add(a);
@@ -430,7 +432,7 @@ class _DrillDetailState extends State<DrillDetail> {
                           );
                         },
                 ),
-                (_selectedCategories?.length ?? 0) < 1
+                (_activity.categories?.length ?? 0) < 1
                     ? Container()
                     : ListTile(
                         contentPadding: EdgeInsets.symmetric(
