@@ -20,11 +20,11 @@ class _DrillsState extends State<Drills> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
 
-          return _buildActivityList(context, snapshot.data.docs);
+          return _buildDrillList(context, snapshot.data.docs);
         });
   }
 
-  Widget _buildActivityList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildDrillList(BuildContext context, List<DocumentSnapshot> snapshot) {
     List<DrillItem> items = snapshot
         .map((data) => DrillItem(
               drill: Drill.fromSnapshot(data),
@@ -52,7 +52,7 @@ class _DrillsState extends State<Drills> {
   }
 
   void _deleteDrill(Drill drill) {
-    FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(drill.reference.id).get().then((doc) => doc.reference.delete());
+    FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(drill.reference.id).delete();
   }
 
   @override

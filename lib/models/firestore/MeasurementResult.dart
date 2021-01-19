@@ -9,10 +9,10 @@ class MeasurementResult extends Measurement {
   final String metric;
   final String label;
   final int order;
-  final dynamic value;
+  dynamic value;
   DocumentReference reference;
 
-  MeasurementResult(this.type, this.metric, this.label, this.order, this.value) : super(type, metric, label, order);
+  MeasurementResult(this.type, this.metric, this.label, this.order, this.value) : super(type, metric, label, order, value, null, false);
 
   MeasurementResult.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),
@@ -24,13 +24,6 @@ class MeasurementResult extends Measurement {
         order = map['order'],
         value = map['value'],
         super.fromMap(map);
-
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = super.toMap();
-    map['value'] = value;
-
-    return map;
-  }
 
   MeasurementResult.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

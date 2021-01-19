@@ -6,7 +6,7 @@ class DrillType {
   final String title;
   final String descriptor;
   final int order;
-  final int timerInSeconds;
+  int timerInSeconds;
   List<Measurement> measurements;
   DocumentReference reference;
 
@@ -24,10 +24,17 @@ class DrillType {
         order = map['order'];
 
   Map<String, dynamic> toMap() {
+    List<Map<String, dynamic>> measures = [];
+
+    measurements.forEach((m) {
+      measures.add(m.toMap());
+    });
+
     return {
       'id': id,
       'title': title,
       'descriptor': descriptor,
+      'measurements': measures,
       'timer_in_seconds': timerInSeconds,
       'order': order,
     };

@@ -9,6 +9,7 @@ import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
 import 'package:skill_drills/models/firestore/DrillType.dart';
 import 'package:skill_drills/models/firestore/Measurement.dart';
+import 'package:skill_drills/models/firestore/MeasurementTarget.dart';
 import 'package:skill_drills/services/dialogs.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'package:skill_drills/services/utility.dart';
@@ -561,6 +562,10 @@ class _DrillDetailState extends State<DrillDetail> {
                                     Duration _duration = Duration(hours: picker.getSelectedValues()[0], minutes: picker.getSelectedValues()[1], seconds: picker.getSelectedValues()[2]);
 
                                     _timerTextController.text = printDuration(_duration);
+
+                                    setState(() {
+                                      _drillType.timerInSeconds = _duration.inSeconds;
+                                    });
                                   },
                                 ).showDialog(context);
                               },
@@ -644,7 +649,7 @@ class _DrillDetailState extends State<DrillDetail> {
   Widget _buildDefaultTargetFields() {
     Map<int, TextEditingController> targetTextControllers = {};
     List<Widget> targetFields = [];
-    List<Measurement> targets = _drillType.measurements.where((m) => m.type == "target").toList();
+    List<Measurement> targets = _drillType.measurements.where((m) => (m).type == "target").toList();
 
     targets.asMap().forEach((i, t) {
       targetTextControllers.putIfAbsent(i, () => TextEditingController());
@@ -667,6 +672,15 @@ class _DrillDetailState extends State<DrillDetail> {
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
+                  onChanged: (value) {
+                    targets[i] = MeasurementTarget(t.type, t.metric, t.label, t.order, value, false);
+
+                    List<Measurement> newMeasurements = _drillType.measurements.where((m) => m.type == "result").toList();
+                    newMeasurements.addAll(targets);
+                    setState(() {
+                      _drillType.measurements = newMeasurements;
+                    });
+                  },
                 ),
               ),
             ),
@@ -717,6 +731,14 @@ class _DrillDetailState extends State<DrillDetail> {
                         Duration _duration = Duration(hours: picker.getSelectedValues()[0], minutes: picker.getSelectedValues()[1], seconds: picker.getSelectedValues()[2]);
 
                         targetTextControllers[i].text = printDuration(_duration);
+
+                        targets[i] = MeasurementTarget(t.type, t.metric, t.label, t.order, _duration, false);
+
+                        List<Measurement> newMeasurements = _drillType.measurements.where((m) => m.type == "result").toList();
+                        newMeasurements.addAll(targets);
+                        setState(() {
+                          _drillType.measurements = newMeasurements;
+                        });
                       },
                     ).showDialog(context);
                   },
@@ -840,8 +862,10 @@ class _DrillDetailState extends State<DrillDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Preview of \"$drillTitle\"", style: Theme.of(context).textTheme.headline6),
-                Divider(height: 5),
+                Container(
+                  margin: EdgeInsets.only(bottom: 5),
+                  child: Text("Preview of \"$drillTitle\"", style: Theme.of(context).textTheme.headline6),
+                ),
                 Text(drill.drillType.descriptor, style: Theme.of(context).textTheme.bodyText2),
               ],
             ),

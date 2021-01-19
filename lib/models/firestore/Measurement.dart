@@ -7,9 +7,12 @@ class Measurement {
   final String metric;
   final String label;
   final int order;
+  dynamic value;
+  dynamic target;
+  bool reverse;
   DocumentReference reference;
 
-  Measurement(this.type, this.metric, this.label, this.order);
+  Measurement(this.type, this.metric, this.label, this.order, this.value, this.target, this.reverse);
 
   Measurement.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['type'] != null),
@@ -17,7 +20,10 @@ class Measurement {
         type = map['type'],
         metric = map['metric'],
         label = map['label'],
-        order = map['order'];
+        order = map['order'],
+        value = map['value'],
+        target = map['target'],
+        reverse = map['reverse'] ?? false;
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,6 +31,9 @@ class Measurement {
       'metric': metric,
       'label': label,
       'order': order,
+      'value': value,
+      'target': target,
+      'reverse': reverse,
     };
   }
 
