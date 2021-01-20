@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hadenhiles.skill_drills">
    <application
-        android:label="skill_drills"
+        android:label="Skill Drills"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name="com.hadenhiles.skill_drills.MainActivity"

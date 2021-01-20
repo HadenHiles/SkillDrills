@@ -1,5 +1,5 @@
 name: skill_drills
-description: A Flutter app for tracking skill based drills
+description: Easily track your development in any skill, using Skill Drills' unique measurements, quick sessions, and convenient routines.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
