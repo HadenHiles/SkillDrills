@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                       width: 460,
                       child: Center(
                         child: Text(
-                          'Track your development in any skill',
+                          'Track your development of any skill',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,

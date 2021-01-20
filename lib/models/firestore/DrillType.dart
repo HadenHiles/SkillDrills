@@ -25,7 +25,7 @@ class DrillType {
   Map<String, dynamic> toMap() {
     List<Map<String, dynamic>> measures = [];
 
-    measurements.forEach((m) {
+    measurements?.forEach((m) {
       measures.add(m.toMap());
     });
 

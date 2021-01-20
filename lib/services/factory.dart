@@ -199,7 +199,7 @@ void bootstrapDrillTypes() {
     DrillType("timer", "Timer", "Countdown from a set duration", Duration(minutes: 1).inSeconds, 4),
     DrillType("reps_in_time", "Reps in duration", "Number of repetitions in a set duration", Duration(minutes: 1).inSeconds, 5),
     DrillType("score_in_time", "Score in duration", "How many successful attempts out of target in a set duration", Duration(minutes: 1).inSeconds, 6),
-    DrillType("time_elapsed_target_time", "Time elapsed vs. Target Time", "How long the drill was performed versus a target time", null, 7),
+    DrillType("duration_target", "Duration vs. Target", "How long the drill was performed versus a target duration", null, 7),
     DrillType("reps_time", "Time to perform reps", "How long it took to do a set number of reps", null, 8),
     DrillType("score_time", "Time to get score", "How long it took to achieve a target score", null, 9),
     DrillType("weighted_reps", "Weighted reps", "Number of repetitions with a set weight", null, 10),
@@ -209,21 +209,20 @@ void bootstrapDrillTypes() {
   FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').get().then((snapshot) async {
     if (auth.currentUser.uid != null && snapshot.docs.length != drillTypes.length) {
       // Drill types don't match - replace them
-      await Future.forEach(snapshot.docs, (doc) {
+      await Future.forEach(snapshot.docs, (dtDoc) {
         // Delete the activities categories first
-        doc.reference.collection('measurements').get().then((measurementSnapshots) {
+        dtDoc.reference.collection('measurements').get().then((measurementSnapshots) {
           measurementSnapshots.docs.forEach((mDoc) {
             mDoc.reference.delete();
           });
         });
 
         // Then delete the activity itself
-        doc.reference.delete();
+        dtDoc.reference.delete();
       });
 
       drillTypes.forEach((dt) {
         DocumentReference drillType = FirebaseFirestore.instance.collection('drill_types').doc(auth.currentUser.uid).collection('drill_types').doc();
-        drillType.set(dt.toMap());
 
         List<Measurement> measurements = [];
 
@@ -266,7 +265,7 @@ void bootstrapDrillTypes() {
             ];
 
             break;
-          case "time_elapsed_target_time":
+          case "duration_target":
             measurements = [
               MeasurementResult("result", "duration", "Time", 1, null),
               MeasurementTarget("target", "duration", "Target Time", 2, null, false),
@@ -308,6 +307,9 @@ void bootstrapDrillTypes() {
         measurements.forEach((m) {
           _saveMeasurement(drillType, m);
         });
+
+        dt.measurements = measurements;
+        drillType.set(dt.toMap());
       });
     }
   });
