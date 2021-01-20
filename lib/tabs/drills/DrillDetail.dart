@@ -587,8 +587,8 @@ class _DrillDetailState extends State<DrillDetail> {
                                 d.measurements = _drillType.measurements;
                                 d.categories = _selectedCategories;
                                 _drill = d;
-                                _preview = _buildPreview(d);
                                 _targetFields = _buildDefaultTargetFields(d);
+                                _preview = _buildPreview(d);
                               });
                             },
                           );
@@ -739,6 +739,14 @@ class _DrillDetailState extends State<DrillDetail> {
     targets.asMap().forEach((i, t) {
       targetTextControllers.putIfAbsent(i, () => TextEditingController());
 
+      if (t.type == "target" && t.target != null) {
+        if (t.metric == "duration") {
+          targetTextControllers[i].text = printDuration(Duration(seconds: t.target));
+        } else {
+          targetTextControllers[i].text = t.target.toString();
+        }
+      }
+
       switch (t.metric) {
         case "amount":
           targetFields.add(
@@ -835,14 +843,6 @@ class _DrillDetailState extends State<DrillDetail> {
           break;
         default:
       }
-
-      if (t.type == "target" && t.target != null) {
-        if (t.metric == "duration") {
-          targetTextControllers[i].text = printDuration(Duration(seconds: t.target));
-        } else {
-          targetTextControllers[i].text = t.target.toString();
-        }
-      }
     });
 
     Widget defaultTargetFields = Column(
@@ -874,8 +874,20 @@ class _DrillDetailState extends State<DrillDetail> {
     Map<int, TextEditingController> measurementTextControllers = {};
     List<Widget> measurementFields = [];
 
-    drill.drillType?.measurements?.asMap()?.forEach((i, m) {
+    _drillType?.measurements?.asMap()?.forEach((i, m) {
       measurementTextControllers.putIfAbsent(i, () => TextEditingController());
+
+      if (m.type == "target" && m.target != null) {
+        switch (m.metric) {
+          case "amount":
+            measurementTextControllers[i].text = m.target;
+            break;
+          case "duration":
+            measurementTextControllers[i].text = printDuration(m.target);
+            break;
+          default:
+        }
+      }
 
       switch (m.metric) {
         case "amount":
