@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skill_drills/main.dart';
+import 'package:skill_drills/models/Settings.dart';
 import 'package:skill_drills/tabs/profile/settings/Activities.dart';
 import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
@@ -16,7 +17,7 @@ class ProfileSettings extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   // State settings values
-  bool _restTimer = true;
+  bool _vibrate = true;
   bool _darkMode = false;
 
   @override
@@ -30,6 +31,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      _vibrate = (prefs.getBool('vibrate') ?? true);
       _darkMode = (prefs.getBool('dark_mode') ?? false);
     });
   }
@@ -87,16 +89,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               tiles: [
                 SettingsTile.switchTile(
                   titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                  title: 'Rest Timer',
+                  title: 'Vibration',
                   leading: Icon(
-                    Icons.timer,
+                    Icons.vibration,
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  switchValue: _restTimer,
-                  onToggle: (bool value) {
+                  switchValue: _vibrate,
+                  onToggle: (bool value) async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
                     setState(() {
-                      _restTimer = value;
+                      _vibrate = value;
+                      prefs.setBool('vibrate', _vibrate);
                     });
+
+                    Provider.of<SettingsStateNotifier>(context, listen: false).updateSettings(Settings(value, _darkMode));
                   },
                 ),
                 SettingsTile.switchTile(
@@ -114,7 +120,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       prefs.setBool('dark_mode', _darkMode);
                     });
 
-                    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(value);
+                    Provider.of<SettingsStateNotifier>(context, listen: false).updateSettings(Settings(_vibrate, value));
                   },
                 ),
               ],

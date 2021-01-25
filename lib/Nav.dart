@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Drills.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/Settings.dart';
+import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
+import 'package:vibration/vibration.dart';
 import 'NavTab.dart';
+import 'models/Settings.dart';
 
 // This is the stateful widget that the main application instantiates.
 class Nav extends StatefulWidget {
@@ -84,7 +89,14 @@ class _NavState extends State<Nav> {
     ),
   ];
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
+    if (settings.vibrate && await Vibration.hasAmplitudeControl() && index != _selectedIndex) {
+      Vibration.vibrate(
+        duration: 50,
+        amplitude: 50,
+      );
+    }
+
     setState(() {
       _selectedIndex = index;
       _title = index == 2 ? lightLogo : _tabs[index].title;
@@ -95,6 +107,8 @@ class _NavState extends State<Nav> {
 
   @override
   void initState() {
+    _loadPreferences();
+
     setState(() {
       _title = lightLogo;
       _actions = [];
@@ -103,6 +117,15 @@ class _NavState extends State<Nav> {
     bootstrap();
 
     super.initState();
+  }
+
+  // Load shared preferences
+  void _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool vibrate = prefs.getBool('vibrate');
+    bool darkMode = prefs.getBool('dark_mode');
+
+    Provider.of<SettingsStateNotifier>(context, listen: false).updateSettings(Settings(vibrate, darkMode));
   }
 
   @override
@@ -159,7 +182,7 @@ class _NavState extends State<Nav> {
             label: 'Drills',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
+            icon: Icon(Icons.event_note),
             label: 'Routines',
           ),
         ],

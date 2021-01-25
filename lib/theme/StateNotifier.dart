@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:skill_drills/models/Settings.dart';
 
-class ThemeStateNotifier extends ChangeNotifier {
-  bool isDarkMode = (ThemeMode.system == ThemeMode.dark);
+class SettingsStateNotifier extends ChangeNotifier {
+  Settings settings = Settings(
+    true,
+    (ThemeMode.system == ThemeMode.dark),
+  );
 
-  void updateTheme(bool isDarkMode) {
-    this.isDarkMode = isDarkMode;
+  void updateSettings(Settings settings) {
+    this.settings = settings;
     notifyListeners();
   }
 }

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skill_drills/services/auth.dart';
-import 'package:skill_drills/theme/StateNotifier.dart';
 import 'Nav.dart';
 
 class Login extends StatefulWidget {
@@ -40,26 +37,18 @@ class _LoginState extends State<Login> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // State variables
-  bool signedIn = FirebaseAuth.instance.currentUser != null;
-  bool hidePassword = true;
+  bool _signedIn = FirebaseAuth.instance.currentUser != null;
+  bool _hidePassword = true;
 
   @override
   void initState() {
-    _loadPreferences();
-
     super.initState();
-  }
-
-  // Load shared preferences
-  void _loadPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Provider.of<ThemeStateNotifier>(context, listen: false).updateTheme(prefs.getBool('dark_mode') ?? false);
   }
 
   @override
   Widget build(BuildContext context) {
     //If user is signed in
-    if (signedIn) {
+    if (_signedIn) {
       return Nav();
     }
 
@@ -197,7 +186,7 @@ class _LoginState extends State<Login> {
                         ),
                         onPressed: () {
                           setState(() {
-                            hidePassword = true;
+                            _hidePassword = true;
                           });
 
                           showDialog(
@@ -258,7 +247,7 @@ class _LoginState extends State<Login> {
                                               padding: EdgeInsets.all(8.0),
                                               child: TextFormField(
                                                 controller: _signInPass,
-                                                obscureText: hidePassword,
+                                                obscureText: _hidePassword,
                                                 decoration: InputDecoration(
                                                   labelText: 'Password',
                                                 ),
@@ -345,7 +334,7 @@ class _LoginState extends State<Login> {
                           ),
                           onPressed: () {
                             setState(() {
-                              hidePassword = true;
+                              _hidePassword = true;
                             });
 
                             showDialog(
@@ -408,7 +397,7 @@ class _LoginState extends State<Login> {
                                                   padding: EdgeInsets.all(8.0),
                                                   child: TextFormField(
                                                     controller: _signUpPass,
-                                                    obscureText: hidePassword,
+                                                    obscureText: _hidePassword,
                                                     decoration: InputDecoration(
                                                       labelText: 'Password',
                                                     ),
@@ -428,7 +417,7 @@ class _LoginState extends State<Login> {
                                                   padding: EdgeInsets.all(8.0),
                                                   child: TextFormField(
                                                     controller: _signUpConfirmPass,
-                                                    obscureText: hidePassword,
+                                                    obscureText: _hidePassword,
                                                     decoration: InputDecoration(
                                                       labelText: 'Confirm Password',
                                                     ),
@@ -519,7 +508,7 @@ class _LoginState extends State<Login> {
         Navigator.of(context, rootNavigator: true).pop('dialog');
 
         setState(() {
-          signedIn = true;
+          _signedIn = true;
         });
       });
     } on FirebaseAuthException catch (e) {
@@ -545,7 +534,7 @@ class _LoginState extends State<Login> {
         Navigator.of(context, rootNavigator: true).pop('dialog');
 
         setState(() {
-          signedIn = true;
+          _signedIn = true;
         });
       });
     } on FirebaseAuthException catch (e) {
@@ -569,7 +558,7 @@ class _LoginState extends State<Login> {
     if (provider == 'google') {
       signInWithGoogle().then((googleSignInAccount) {
         setState(() {
-          signedIn = true;
+          _signedIn = true;
         });
       }).catchError((e) async {
         var message = "There was an error signing in with Google";

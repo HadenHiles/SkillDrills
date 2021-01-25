@@ -5,17 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/theme/Theme.dart';
 import 'Login.dart';
+import 'models/Settings.dart';
 
 // Setup a navigation key so that we can navigate without context
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+Settings settings;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
 
   runApp(
-    ChangeNotifierProvider<ThemeStateNotifier>(
-      create: (_) => ThemeStateNotifier(),
+    ChangeNotifierProvider<SettingsStateNotifier>(
+      create: (_) => SettingsStateNotifier(),
       child: SkillDrills(),
     ),
   );
@@ -31,14 +34,16 @@ class SkillDrills extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    return Consumer<ThemeStateNotifier>(
-      builder: (context, themeState, child) {
+    return Consumer<SettingsStateNotifier>(
+      builder: (context, settingsState, child) {
+        settings = settingsState.settings;
+
         return MaterialApp(
           title: 'Skill Drills',
           navigatorKey: navigatorKey,
           theme: SkillDrillsTheme.lightTheme,
           darkTheme: SkillDrillsTheme.darkTheme,
-          themeMode: themeState.isDarkMode ? ThemeMode.dark : ThemeMode.system,
+          themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.system,
           home: Login(),
         );
       },
