@@ -88,7 +88,9 @@ class _LoginState extends State<Login> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontFamily: "Choplin",
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
                           ),
                         ),
                       ),

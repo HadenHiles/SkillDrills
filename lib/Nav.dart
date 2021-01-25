@@ -6,6 +6,7 @@ import 'package:skill_drills/main.dart';
 import 'package:skill_drills/tabs/Drills.dart';
 import 'package:skill_drills/tabs/Profile.dart';
 import 'package:skill_drills/services/factory.dart';
+import 'package:skill_drills/tabs/Start.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/Settings.dart';
 import 'package:skill_drills/theme/StateNotifier.dart';
@@ -63,6 +64,7 @@ class _NavState extends State<Nav> {
     ),
     NavTab(
       title: BasicTitle(title: "Start"),
+      body: Start(),
     ),
     NavTab(
       title: BasicTitle(title: "Drills"),

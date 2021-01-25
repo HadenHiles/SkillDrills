@@ -10,10 +10,12 @@ class BasicTitle extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 2),
       child: Text(
-        title,
+        title.toUpperCase(),
         style: TextStyle(
           fontSize: 22,
           color: Theme.of(context).textTheme.headline1.color,
+          fontFamily: "Choplin",
+          fontWeight: FontWeight.w900,
         ),
         textAlign: TextAlign.center,
       ),

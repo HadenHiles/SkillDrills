@@ -34,12 +34,14 @@ class SkillDrillsTheme {
       ),
       headline2: TextStyle(
         color: Colors.black87,
+        fontFamily: "Choplin",
       ),
       headline3: TextStyle(
         color: Colors.black87,
       ),
       headline4: TextStyle(
         color: Colors.black87,
+        fontFamily: "Choplin",
       ),
       headline5: TextStyle(
         color: Colors.black87,
@@ -91,12 +93,14 @@ class SkillDrillsTheme {
       ),
       headline2: TextStyle(
         color: Colors.white,
+        fontFamily: "Choplin",
       ),
       headline3: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
       ),
       headline4: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
+        fontFamily: "Choplin",
       ),
       headline5: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
