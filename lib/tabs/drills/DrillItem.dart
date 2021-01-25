@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/SkillDrillsDialog.dart';
+import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
+import 'package:skill_drills/models/firestore/Measurement.dart';
 import 'package:skill_drills/services/dialogs.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 
@@ -19,6 +22,38 @@ class DrillItem extends StatefulWidget {
 }
 
 class _DrillItemState extends State<DrillItem> {
+  List<Measurement> _measurements = [];
+  List<Category> _categories = [];
+
+  @override
+  void initState() {
+    FirebaseFirestore.instance.collection('drills').doc(user.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').get().then((mSnap) {
+      List<Measurement> measurements = [];
+
+      mSnap.docs.forEach((m) {
+        measurements.add(Measurement.fromSnapshot(m));
+      });
+
+      setState(() {
+        _measurements = measurements;
+      });
+    });
+
+    FirebaseFirestore.instance.collection('drills').doc(user.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').get().then((cSnap) {
+      List<Category> categories = [];
+
+      cSnap.docs.forEach((m) {
+        categories.add(Category.fromSnapshot(m));
+      });
+
+      setState(() {
+        _categories = categories;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,6 +81,12 @@ class _DrillItemState extends State<DrillItem> {
                   ],
                 ),
               ],
+            ),
+            subtitle: Text(
+              _outputCategories(_categories),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -93,5 +134,15 @@ class _DrillItemState extends State<DrillItem> {
         ),
       ),
     );
+  }
+
+  String _outputCategories(List<Category> categories) {
+    String catString = "";
+
+    categories.asMap().forEach((i, c) {
+      catString += (i != categories.length - 1 && categories.length != 1) ? c.title + ", " : c.title;
+    });
+
+    return catString;
   }
 }
