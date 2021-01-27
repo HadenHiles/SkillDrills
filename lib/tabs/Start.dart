@@ -16,12 +16,12 @@ class _StartState extends State<Start> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Quick start".toUpperCase(),
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-          Divider(
-            height: 10,
+          Container(
+            margin: EdgeInsets.only(bottom: 10),
+            child: Text(
+              "Quick start".toUpperCase(),
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
           ),
           MaterialButton(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
@@ -44,7 +44,7 @@ class _StartState extends State<Start> {
             onPressed: () {},
           ),
           Container(
-            margin: EdgeInsets.only(top: 50),
+            margin: EdgeInsets.only(top: 50, bottom: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,9 +55,6 @@ class _StartState extends State<Start> {
                 ),
               ],
             ),
-          ),
-          Divider(
-            height: 10,
           ),
         ],
       ),

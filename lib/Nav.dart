@@ -35,6 +35,9 @@ class _NavState extends State<Nav> {
   );
 
   // State variables
+  PanelController _sessionPanelController = PanelController();
+  PanelState _sessionPanelState = PanelState.CLOSED;
+
   Widget _title;
   List<Widget> _actions;
   int _selectedIndex = 2;
@@ -136,28 +139,62 @@ class _NavState extends State<Nav> {
     return Scaffold(
       body: SlidingUpPanel(
         backdropEnabled: true,
-        maxHeight: MediaQuery.of(context).size.height - 150,
+        controller: _sessionPanelController,
+        maxHeight: MediaQuery.of(context).size.height - 170,
+        minHeight: 65,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
         ),
+        onPanelOpened: () {
+          setState(() {
+            _sessionPanelState = PanelState.OPEN;
+          });
+        },
+        onPanelClosed: () {
+          setState(() {
+            _sessionPanelState = PanelState.CLOSED;
+          });
+        },
         panel: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryVariant,
           ),
-          padding: EdgeInsets.only(top: 20),
-          width: double.infinity,
-          child: ListTile(
-            title: Text(
-              "Empty Session",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontFamily: "Choplin",
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+          child: Column(
+            children: [
+              ListTile(
+                tileColor: Theme.of(context).primaryColor,
+                title: Text(
+                  "Wednesday Session",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    fontFamily: "Choplin",
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                trailing: InkWell(
+                  child: Icon(
+                    _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+                contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                onTap: () {
+                  if (_sessionPanelController.isPanelClosed) {
+                    _sessionPanelController.open();
+                    setState(() {
+                      _sessionPanelState = PanelState.OPEN;
+                    });
+                  } else {
+                    _sessionPanelController.close();
+                    setState(() {
+                      _sessionPanelState = PanelState.CLOSED;
+                    });
+                  }
+                },
               ),
-            ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+            ],
           ),
         ),
         body: NestedScrollView(
