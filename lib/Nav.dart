@@ -140,7 +140,7 @@ class _NavState extends State<Nav> {
       body: SlidingUpPanel(
         backdropEnabled: true,
         controller: _sessionPanelController,
-        maxHeight: MediaQuery.of(context).size.height - 170,
+        maxHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
         minHeight: 65,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
