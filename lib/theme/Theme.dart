@@ -35,6 +35,7 @@ class SkillDrillsTheme {
       headline2: TextStyle(
         color: Colors.black87,
         fontFamily: "Choplin",
+        fontWeight: FontWeight.w700,
       ),
       headline3: TextStyle(
         color: Colors.black87,
@@ -42,6 +43,7 @@ class SkillDrillsTheme {
       headline4: TextStyle(
         color: Colors.black87,
         fontFamily: "Choplin",
+        fontWeight: FontWeight.w700,
       ),
       headline5: TextStyle(
         color: Colors.black87,
@@ -94,6 +96,7 @@ class SkillDrillsTheme {
       headline2: TextStyle(
         color: Colors.white,
         fontFamily: "Choplin",
+        fontWeight: FontWeight.w700,
       ),
       headline3: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
@@ -101,6 +104,7 @@ class SkillDrillsTheme {
       headline4: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
         fontFamily: "Choplin",
+        fontWeight: FontWeight.w700,
       ),
       headline5: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),

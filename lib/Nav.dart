@@ -11,6 +11,7 @@ import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/Settings.dart';
 import 'package:skill_drills/theme/StateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:vibration/vibration.dart';
 import 'NavTab.dart';
 import 'models/Settings.dart';
@@ -133,36 +134,63 @@ class _NavState extends State<Nav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              collapsedHeight: _showLogoToolbar ? 100 : 65,
-              expandedHeight: _showLogoToolbar ? 200.0 : 140,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              iconTheme: Theme.of(context).iconTheme,
-              actionsIconTheme: Theme.of(context).iconTheme,
-              floating: true,
-              pinned: true,
-              flexibleSpace: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
-                ),
-                child: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.parallax,
-                  titlePadding: _showLogoToolbar ? EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20) : null,
-                  centerTitle: _showLogoToolbar ? true : false,
-                  title: _title,
-                  background: Container(
-                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
+      body: SlidingUpPanel(
+        backdropEnabled: true,
+        maxHeight: MediaQuery.of(context).size.height - 150,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        panel: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryVariant,
+          ),
+          padding: EdgeInsets.only(top: 20),
+          width: double.infinity,
+          child: ListTile(
+            title: Text(
+              "Empty Session",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontFamily: "Choplin",
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+          ),
+        ),
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                collapsedHeight: _showLogoToolbar ? 100 : 65,
+                expandedHeight: _showLogoToolbar ? 200.0 : 140,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                iconTheme: Theme.of(context).iconTheme,
+                actionsIconTheme: Theme.of(context).iconTheme,
+                floating: true,
+                pinned: true,
+                flexibleSpace: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                  ),
+                  child: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    titlePadding: _showLogoToolbar ? EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20) : null,
+                    centerTitle: _showLogoToolbar ? true : false,
+                    title: _title,
+                    background: Container(
+                      color: _showLogoToolbar ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
+                    ),
                   ),
                 ),
+                actions: _actions,
               ),
-              actions: _actions,
-            ),
-          ];
-        },
-        body: _tabs.elementAt(_selectedIndex),
+            ];
+          },
+          body: _tabs.elementAt(_selectedIndex),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

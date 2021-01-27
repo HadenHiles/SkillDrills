@@ -39,6 +39,8 @@ dependencies:
   expandable: ^4.1.4
   flutter_picker: ^1.1.5
   vibration: ^1.7.3
+  flutter_isolate: ^1.0.0+14
+  sliding_up_panel: ^1.0.2
 
 
   # The following adds the Cupertino Icons font to your application.

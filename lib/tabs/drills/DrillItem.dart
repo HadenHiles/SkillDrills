@@ -5,7 +5,6 @@ import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/SkillDrillsDialog.dart';
 import 'package:skill_drills/models/firestore/Category.dart';
 import 'package:skill_drills/models/firestore/Drill.dart';
-import 'package:skill_drills/models/firestore/Measurement.dart';
 import 'package:skill_drills/services/dialogs.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 
@@ -22,23 +21,10 @@ class DrillItem extends StatefulWidget {
 }
 
 class _DrillItemState extends State<DrillItem> {
-  List<Measurement> _measurements = [];
   List<Category> _categories = [];
 
   @override
   void initState() {
-    FirebaseFirestore.instance.collection('drills').doc(user.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').get().then((mSnap) {
-      List<Measurement> measurements = [];
-
-      mSnap.docs.forEach((m) {
-        measurements.add(Measurement.fromSnapshot(m));
-      });
-
-      setState(() {
-        _measurements = measurements;
-      });
-    });
-
     FirebaseFirestore.instance.collection('drills').doc(user.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').get().then((cSnap) {
       List<Category> categories = [];
 

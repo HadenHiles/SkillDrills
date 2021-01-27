@@ -23,7 +23,9 @@ class _DrillsState extends State<Drills> {
           if (!snapshot.hasData)
             return Column(
               children: [
-                LinearProgressIndicator(),
+                LinearProgressIndicator(
+                  minHeight: 5,
+                ),
               ],
             );
 
