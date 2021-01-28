@@ -37,6 +37,7 @@ class _NavState extends State<Nav> {
   // State variables
   PanelController _sessionPanelController = PanelController();
   PanelState _sessionPanelState = PanelState.CLOSED;
+  double _bottomNavOffsetPercentage = 0;
 
   Widget _title;
   List<Widget> _actions;
@@ -156,6 +157,11 @@ class _NavState extends State<Nav> {
             _sessionPanelState = PanelState.CLOSED;
           });
         },
+        onPanelSlide: (double offset) {
+          setState(() {
+            _bottomNavOffsetPercentage = offset;
+          });
+        },
         panel: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryVariant,
@@ -229,35 +235,39 @@ class _NavState extends State<Nav> {
           body: _tabs.elementAt(_selectedIndex),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Start',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.timer),
-            label: 'Drills',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_note),
-            label: 'Routines',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        backgroundColor: Theme.of(context).backgroundColor,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
-        onTap: _onItemTapped,
+      bottomNavigationBar: SizedOverflowBox(
+        alignment: AlignmentDirectional.topCenter,
+        size: Size.fromHeight(AppBar().preferredSize.height - (AppBar().preferredSize.height * _bottomNavOffsetPercentage)),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              label: 'Start',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.timer),
+              label: 'Drills',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event_note),
+              label: 'Routines',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          backgroundColor: Theme.of(context).backgroundColor,
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
