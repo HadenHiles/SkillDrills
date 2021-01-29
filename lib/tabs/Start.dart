@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:skill_drills/main.dart';
+import 'package:skill_drills/models/SkillDrillsDialog.dart';
+import 'package:skill_drills/services/dialogs.dart';
 
 class Start extends StatefulWidget {
   Start({Key key}) : super(key: key);
@@ -41,7 +44,34 @@ class _StartState extends State<Start> {
             ),
             color: Theme.of(context).colorScheme.secondary,
             textColor: Theme.of(context).colorScheme.onSecondary,
-            onPressed: () {},
+            onPressed: () {
+              if (!sessionService.isRunning) {
+                sessionService.start();
+              } else {
+                dialog(
+                  context,
+                  SkillDrillsDialog(
+                    "Override current session?",
+                    Text(
+                      "Starting a new session will override your existing one.\n\nWould you like to continue?",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                    "Cancel",
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                    "Continue",
+                    () {
+                      sessionService.reset();
+                      Navigator.of(context).pop();
+                      sessionService.start();
+                    },
+                  ),
+                );
+              }
+            },
           ),
           Container(
             margin: EdgeInsets.only(top: 50, bottom: 10),

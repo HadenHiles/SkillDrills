@@ -167,25 +167,26 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                 ),
                 onPressed: () {
                   dialog(
-                      context,
-                      SkillDrillsDialog(
-                        "Reset Sports?",
-                        Text(
-                          "Are you sure you want to reset your sports?\n\nThis can't be undone.",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
+                    context,
+                    SkillDrillsDialog(
+                      "Reset Sports?",
+                      Text(
+                        "Are you sure you want to reset your sports?\n\nThis can't be undone.",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
-                        "Cancel",
-                        () {
-                          Navigator.of(context).pop();
-                        },
-                        "Reset",
-                        () {
-                          resetActivities();
-                          Navigator.of(context).pop();
-                        },
-                      ));
+                      ),
+                      "Cancel",
+                      () {
+                        Navigator.of(context).pop();
+                      },
+                      "Reset",
+                      () {
+                        resetActivities();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  );
                 },
               ),
             ),
