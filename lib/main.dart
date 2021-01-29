@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skill_drills/Nav.dart';
+import 'package:skill_drills/services/session.dart';
 import 'package:skill_drills/theme/SettingsStateNotifier.dart';
 import 'package:skill_drills/theme/Theme.dart';
 import 'Login.dart';
@@ -11,6 +14,7 @@ import 'models/Settings.dart';
 // Setup a navigation key so that we can navigate without context
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 Settings settings = Settings(true, false);
+final sessionService = SessionService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +37,8 @@ void main() async {
 }
 
 class SkillDrills extends StatelessWidget {
+  final user = FirebaseAuth.instance.currentUser;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -52,7 +58,7 @@ class SkillDrills extends StatelessWidget {
           theme: SkillDrillsTheme.lightTheme,
           darkTheme: SkillDrillsTheme.darkTheme,
           themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.system,
-          home: Login(),
+          home: user != null ? Nav() : Login(),
         );
       },
     );

@@ -166,6 +166,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   onPressed: (BuildContext context) {
                     signOut();
 
+                    navigatorKey.currentState.pop();
                     navigatorKey.currentState.pushReplacement(
                       MaterialPageRoute(
                         builder: (context) {
