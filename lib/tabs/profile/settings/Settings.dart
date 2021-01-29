@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skill_drills/Login.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/Settings.dart';
+import 'package:skill_drills/services/auth.dart';
 import 'package:skill_drills/tabs/profile/settings/Activities.dart';
 import 'package:skill_drills/theme/SettingsStateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
@@ -144,6 +146,35 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     }));
                   },
                 ),
+              ],
+            ),
+            SettingsSection(
+              titleTextStyle: Theme.of(context).textTheme.headline6,
+              title: 'Account',
+              tiles: [
+                SettingsTile(
+                  title: 'Logout',
+                  titleTextStyle: TextStyle(
+                    color: Colors.red,
+                    fontSize: Theme.of(context).textTheme.bodyText1.fontSize,
+                  ),
+                  subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
+                  leading: Icon(
+                    Icons.logout,
+                    color: Colors.red,
+                  ),
+                  onPressed: (BuildContext context) {
+                    signOut();
+
+                    navigatorKey.currentState.pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Login();
+                        },
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ],

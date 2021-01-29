@@ -232,7 +232,12 @@ class _NavState extends State<Nav> {
               ),
             ];
           },
-          body: _tabs.elementAt(_selectedIndex),
+          body: _sessionPanelState == PanelState.OPEN
+              ? Container(
+                  padding: EdgeInsets.only(bottom: 100),
+                  child: _tabs.elementAt(_selectedIndex),
+                )
+              : _tabs.elementAt(_selectedIndex),
         ),
       ),
       bottomNavigationBar: SizedOverflowBox(

@@ -68,7 +68,7 @@ class _DrillsState extends State<Drills> {
 
     return items.length > 0
         ? ListView(
-            padding: EdgeInsets.only(top: 10, bottom: 150),
+            padding: EdgeInsets.only(top: 10),
             children: items,
           )
         : Column(

@@ -169,9 +169,9 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
                   dialog(
                       context,
                       SkillDrillsDialog(
-                        "Reset Activities?",
+                        "Reset Sports?",
                         Text(
-                          "Are you sure you want to reset your activities?\n\nThis can't be undone.",
+                          "Are you sure you want to reset your sports?\n\nThis can't be undone.",
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onBackground,
                           ),

@@ -1,10 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:skill_drills/main.dart';
-import 'package:skill_drills/services/auth.dart';
 import 'package:skill_drills/widgets/UserAvatar.dart';
-
-import '../Login.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -22,7 +18,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 25, right: 25, bottom: 65),
+      padding: EdgeInsets.only(left: 25, right: 25, bottom: 125),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -71,30 +67,6 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ],
-          ),
-          Container(
-            width: double.infinity,
-            child: FlatButton(
-              padding: EdgeInsets.all(25),
-              child: Text(
-                "Logout",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.red,
-                ),
-              ),
-              onPressed: () {
-                signOut();
-
-                navigatorKey.currentState.pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Login();
-                    },
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),
