@@ -9,7 +9,7 @@ import 'package:skill_drills/services/factory.dart';
 import 'package:skill_drills/tabs/Start.dart';
 import 'package:skill_drills/tabs/drills/DrillDetail.dart';
 import 'package:skill_drills/tabs/profile/settings/Settings.dart';
-import 'package:skill_drills/theme/StateNotifier.dart';
+import 'package:skill_drills/theme/SettingsStateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:vibration/vibration.dart';
@@ -129,8 +129,8 @@ class _NavState extends State<Nav> {
   // Load shared preferences
   void _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool vibrate = prefs.getBool('vibrate');
-    bool darkMode = prefs.getBool('dark_mode');
+    bool vibrate = prefs.getBool('vibrate') ?? true;
+    bool darkMode = prefs.getBool('dark_mode') ?? ThemeMode.system == ThemeMode.dark;
 
     Provider.of<SettingsStateNotifier>(context, listen: false).updateSettings(Settings(vibrate, darkMode));
   }

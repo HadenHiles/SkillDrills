@@ -22,7 +22,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25),
+      padding: EdgeInsets.only(left: 25, right: 25, bottom: 65),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

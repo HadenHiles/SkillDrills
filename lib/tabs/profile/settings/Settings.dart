@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/Settings.dart';
 import 'package:skill_drills/tabs/profile/settings/Activities.dart';
-import 'package:skill_drills/theme/StateNotifier.dart';
+import 'package:skill_drills/theme/SettingsStateNotifier.dart';
 import 'package:skill_drills/widgets/BasicTitle.dart';
 
 class ProfileSettings extends StatefulWidget {
