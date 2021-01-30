@@ -19,6 +19,8 @@ import 'package:vibration/vibration.dart';
 import 'NavTab.dart';
 import 'models/Settings.dart';
 
+final PanelController sessionPanelController = PanelController();
+
 // This is the stateful widget that the main application instantiates.
 class Nav extends StatefulWidget {
   Nav({Key key}) : super(key: key);
@@ -38,7 +40,6 @@ class _NavState extends State<Nav> {
   );
 
   // State variables
-  PanelController _sessionPanelController = PanelController();
   PanelState _sessionPanelState = PanelState.CLOSED;
   double _bottomNavOffsetPercentage = 0;
 
@@ -72,7 +73,9 @@ class _NavState extends State<Nav> {
     ),
     NavTab(
       title: BasicTitle(title: "Start"),
-      body: Start(),
+      body: Start(
+        sessionPanelController: sessionPanelController,
+      ),
     ),
     NavTab(
       title: BasicTitle(title: "Drills"),
@@ -148,7 +151,7 @@ class _NavState extends State<Nav> {
           builder: (context, child) {
             return SlidingUpPanel(
               backdropEnabled: true,
-              controller: _sessionPanelController,
+              controller: sessionPanelController,
               maxHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
               minHeight: sessionService.isRunning ? 65 : 0,
               borderRadius: BorderRadius.only(
@@ -214,13 +217,13 @@ class _NavState extends State<Nav> {
                       ),
                       contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       onTap: () {
-                        if (_sessionPanelController.isPanelClosed) {
-                          _sessionPanelController.open();
+                        if (sessionPanelController.isPanelClosed) {
+                          sessionPanelController.open();
                           setState(() {
                             _sessionPanelState = PanelState.OPEN;
                           });
                         } else {
-                          _sessionPanelController.close();
+                          sessionPanelController.close();
                           setState(() {
                             _sessionPanelState = PanelState.CLOSED;
                           });
@@ -228,7 +231,7 @@ class _NavState extends State<Nav> {
                       },
                     ),
                     Session(
-                      sessionPanelController: _sessionPanelController,
+                      sessionPanelController: sessionPanelController,
                     ),
                   ],
                 ),

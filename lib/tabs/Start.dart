@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/models/SkillDrillsDialog.dart';
 import 'package:skill_drills/services/dialogs.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Start extends StatefulWidget {
-  Start({Key key}) : super(key: key);
+  Start({Key key, this.sessionPanelController}) : super(key: key);
+
+  final PanelController sessionPanelController;
 
   @override
   _StartState createState() => _StartState();
@@ -47,6 +50,7 @@ class _StartState extends State<Start> {
             onPressed: () {
               if (!sessionService.isRunning) {
                 sessionService.start();
+                widget.sessionPanelController.open();
               } else {
                 dialog(
                   context,
