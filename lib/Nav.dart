@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skill_drills/Session.dart';
 import 'package:skill_drills/main.dart';
 import 'package:skill_drills/services/session.dart';
 import 'package:skill_drills/services/utility.dart';
@@ -225,6 +226,9 @@ class _NavState extends State<Nav> {
                           });
                         }
                       },
+                    ),
+                    Session(
+                      sessionPanelController: _sessionPanelController,
                     ),
                   ],
                 ),
