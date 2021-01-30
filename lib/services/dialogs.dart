@@ -6,7 +6,7 @@ import 'package:skill_drills/models/SkillDrillsDialog.dart';
 
 void dialog(BuildContext context, SkillDrillsDialog dialog) {
   // set up the buttons
-  Widget cancelButton = FlatButton(
+  Widget cancelButton = TextButton(
     child: Text(
       dialog.cancelText ?? "Cancel",
       style: TextStyle(
@@ -15,7 +15,7 @@ void dialog(BuildContext context, SkillDrillsDialog dialog) {
     ),
     onPressed: dialog.cancelCallback ?? () {},
   );
-  Widget continueButton = FlatButton(
+  Widget continueButton = TextButton(
     child: Text(
       dialog.continueText ?? "Continue",
       style: TextStyle(color: Colors.red),
@@ -206,7 +206,7 @@ class DurationPicker extends Picker {
           if (cancel == null) {
             String _cancelText = cancelText ?? PickerLocalizations.of(context).cancelText;
             if (_cancelText != null && _cancelText != "") {
-              actions.add(FlatButton(
+              actions.add(TextButton(
                   onPressed: () {
                     Navigator.pop<List<int>>(context, null);
                     if (onCancel != null) onCancel();
@@ -220,7 +220,7 @@ class DurationPicker extends Picker {
           if (confirm == null) {
             String _confirmText = confirmText ?? PickerLocalizations.of(context).confirmText;
             if (_confirmText != null && _confirmText != "") {
-              actions.add(FlatButton(
+              actions.add(TextButton(
                   onPressed: () {
                     Navigator.pop<List<int>>(context, selecteds);
                     if (onConfirm != null) onConfirm(this, selecteds);

@@ -156,8 +156,10 @@ class _ActivitiesSettingsState extends State<ActivitiesSettings> {
             ),
             Container(
               width: double.infinity,
-              child: FlatButton(
-                padding: EdgeInsets.all(25),
+              child: TextButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(25),
+                ),
                 child: Text(
                   "Reset to defaults",
                   style: TextStyle(

@@ -152,8 +152,10 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       height: 60,
                       width: 360,
-                      child: RaisedButton(
-                        color: Colors.white,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -267,9 +269,11 @@ class _LoginState extends State<Login> {
                                               padding: const EdgeInsets.all(8.0),
                                               child: SizedBox(
                                                 width: double.infinity,
-                                                child: RaisedButton(
-                                                  color: Theme.of(context).primaryColor,
-                                                  textColor: Colors.white,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    primary: Theme.of(context).primaryColor,
+                                                    onPrimary: Colors.white,
+                                                  ),
                                                   child: Text("Sign in"),
                                                   onPressed: () async {
                                                     if (_signInFormKey.currentState.validate()) {
@@ -324,8 +328,10 @@ class _LoginState extends State<Login> {
                       child: SizedBox(
                         height: 60,
                         width: 360,
-                        child: FlatButton(
-                          color: Colors.transparent,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                          ),
                           child: Text(
                             'Sign up'.toUpperCase(),
                             style: TextStyle(
@@ -439,9 +445,11 @@ class _LoginState extends State<Login> {
                                                   padding: const EdgeInsets.all(8.0),
                                                   child: SizedBox(
                                                     width: double.infinity,
-                                                    child: RaisedButton(
-                                                      color: Theme.of(context).primaryColor,
-                                                      textColor: Colors.white,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        primary: Theme.of(context).primaryColor,
+                                                        onPrimary: Colors.white,
+                                                      ),
                                                       child: Text("Sign up"),
                                                       onPressed: () async {
                                                         if (_signUpFormKey.currentState.validate()) {
