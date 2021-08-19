@@ -24,7 +24,7 @@ class _DrillsState extends State<Drills> {
             return Column(
               children: [
                 LinearProgressIndicator(
-                  minHeight: 5,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
               ],
             );

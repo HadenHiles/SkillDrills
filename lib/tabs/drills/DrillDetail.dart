@@ -200,22 +200,22 @@ class _DrillDetailState extends State<DrillDetail> {
 
                       if (!hasErrors && widget.drill != null) {
                         if (_formKey.currentState.validate()) {
-                          _drillType.measurements.forEach((m) {
-                            FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').get().then((snapshot) {
-                              snapshot.docs.forEach((doc) {
-                                doc.reference.delete();
-                              });
+                          FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').get().then((snapshot) {
+                            snapshot.docs.forEach((doc) {
+                              doc.reference.delete();
+                            });
 
+                            _drillType.measurements.forEach((m) {
                               FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('measurements').doc().set(m.toMap());
                             });
                           });
 
-                          _selectedCategories.forEach((c) {
-                            FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').get().then((snapshot) {
-                              snapshot.docs.forEach((doc) {
-                                doc.reference.delete();
-                              });
+                          FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').get().then((snapshot) {
+                            snapshot.docs.forEach((doc) {
+                              doc.reference.delete();
+                            });
 
+                            _selectedCategories.forEach((c) {
                               FirebaseFirestore.instance.collection('drills').doc(auth.currentUser.uid).collection('drills').doc(widget.drill.reference.id).collection('categories').doc().set(c.toMap());
                             });
                           });
@@ -355,7 +355,9 @@ class _DrillDetailState extends State<DrillDetail> {
                       ? Container(
                           height: 25,
                           width: 25,
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          ),
                         )
                       : Text(
                           _activity.title.isNotEmpty ? _activity.title : "choose",
@@ -411,7 +413,11 @@ class _DrillDetailState extends State<DrillDetail> {
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [CircularProgressIndicator()],
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ],
                               );
                             },
                             onChange: (selected) async {
@@ -519,7 +525,9 @@ class _DrillDetailState extends State<DrillDetail> {
                       ? Container(
                           height: 25,
                           width: 25,
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          ),
                         )
                       : Text(
                           _drillType != null ? _drillType.title : "choose",
@@ -575,7 +583,11 @@ class _DrillDetailState extends State<DrillDetail> {
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [CircularProgressIndicator()],
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: Theme.of(context).primaryColor,
+                                  )
+                                ],
                               );
                             },
                             onChange: (selected) async {
